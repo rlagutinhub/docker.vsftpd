@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -ex
+
+# SIGTERM handler
+function _term() {
+
+   echo "Stopping container."
+   echo "SIGTERM received, shutting down the server!"
+   kill -15 $childPID
+   exit 0 # 128+15
+
+}
+
+# SIGKILL handler
+function _kill() {
+
+   echo "SIGKILL received, shutting down the server!"
+   kill -9 $childPID
+   # exit 137 # 128+9
+
+}
+
+# Set SIGTERM handler
+trap _term SIGTERM
+
+# Set SIGKILL handler
+trap _kill SIGKILL
+
+vsftpd /etc/vsftpd/vsftpd.conf &
+
+childPID=$!
+wait $childPID
