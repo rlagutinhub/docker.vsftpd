@@ -1,4 +1,4 @@
-FROM oraclelinux:8-slim
+FROM oraclelinux:7-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 
@@ -9,10 +9,10 @@ ENV LANG=en_US.UTF-8 \
     TZ=Europe/Moscow
 
 RUN set -ex \
-    && microdnf update \
-    && microdnf install rootfiles tar gzip \
-    && microdnf install vsftpd \
-    microdnf clean all;
+    && yum -y update \
+    && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip zip unzip gcc make pam-devel httpd-tools vsftpd \
+    && rm -rf /var/cache/yum/* \
+    ;
 
 RUN usermod -u ${FTP_UID} ftp
 RUN groupmod -g ${FTP_GID} ftp

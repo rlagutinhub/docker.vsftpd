@@ -2,6 +2,10 @@
 
 set -ex
 
+# VARIABLES
+POWERDNS_URL=${POWERDNS_URL:-"127.0.0.1:8081"}
+FTP_USERS_ROOT=${FTP_USERS_ROOT:-"False"}
+
 # SIGTERM handler
 function _term() {
 
@@ -26,6 +30,28 @@ trap _term SIGTERM
 
 # Set SIGKILL handler
 trap _kill SIGKILL
+
+
+if [ ! -z "${FTP_USER}" ] && [ ! -z "${FTP_PASSWORD}" ]; then
+
+    echo "Adding user ${FTP_USER}"
+    useradd -c "ftp user" -s /sbin/nologin "${FTP_USER}"
+    echo -e "${FTP_PASSWORD}" | passwd ${FTP_USER}
+    echo "${FTP_USER}" >> /etc/vsftpd/user_list
+
+else
+
+    while read -r user; do
+        IFS=: read -r FTP_USER FTP_PASSWORD <<< "${!user}"
+        echo "Adding user ${FTP_USER}"
+        useradd -c "ftp user" -s /sbin/nologin "${FTP_USER}"
+        echo -e "${FTP_PASSWORD}" | passwd ${FTP_USER}
+        echo "${FTP_USER}" >> /etc/vsftpd/user_list
+    done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
+
+fi
+
+if [ "${FTP_USERS_ROOT}" == "True" ]; then sed -i 's/local_root=.*/local_root=\/var\/ftp\/$USER/' /etc/vsftpd/vsftpd.conf; fi
 
 vsftpd /etc/vsftpd/vsftpd.conf &
 
