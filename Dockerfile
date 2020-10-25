@@ -19,9 +19,13 @@ RUN set -ex \
     && rm -rf /var/cache/yum/* \
     ;
 
+COPY pam_pwdfile/libpam-pwdfile-master.zip /tmp/libpam-pwdfile-master.zip
+
 RUN set -ex \
+    && unzip /tmp/libpam-pwdfile-master.zip -d /tmp \
     && make -C /tmp/libpam-pwdfile \
     && cp -p /tmp/libpam-pwdfile/pam_pwdfile.so /usr/lib64/security/ \
+    && rm -rf /tmp/libpam-pwdfile-master.zip \
     && rm -rf /tmp/libpam-pwdfile \
     ;
 
