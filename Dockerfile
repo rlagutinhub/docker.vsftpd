@@ -2,8 +2,13 @@ FROM oraclelinux:7-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 
-ARG FTP_UID=15
-ARG FTP_GID=50
+ARG FTP_UID=1000
+ARG FTP_GID=1000
+
+RUN set -x \
+  && groupadd -g ${FTP_GID} vsftpd \
+  && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'vsftpd user' vsftpd \
+  ;
 
 ENV LANG=en_US.UTF-8 \
     TZ=Europe/Moscow
@@ -20,13 +25,10 @@ RUN set -ex \
     && rm -rf /tmp/libpam-pwdfile
     ;
 
-RUN usermod -u ${FTP_UID} ftp
-RUN groupmod -g ${FTP_GID} ftp
-
 COPY vsftpd.conf /etc/vsftpd.conf
 COPY vsftpd_virtual /etc/pam.d/
 COPY setup-ftp /usr/local/bin/setup-ftp
 
-EXPOSE 20 21 4559 4560 4561 4562 4563 4564
+EXPOSE 20 21
 
 CMD ["setup-ftp"]
