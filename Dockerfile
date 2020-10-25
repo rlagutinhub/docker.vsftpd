@@ -1,4 +1,5 @@
 # docker build -f Dockerfile -t vsftpd:latest .
+# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=123456" vsftpd:latest
 FROM oraclelinux:7-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
