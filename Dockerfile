@@ -15,7 +15,7 @@ ENV LANG=en_US.UTF-8 \
 
 RUN set -ex \
     && yum -y update \
-    && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip zip unzip gcc make pam-devel httpd-tools vsftpd \
+    && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip zip unzip gcc make pam-devel openssl httpd-tools vsftpd \
     && rm -rf /var/cache/yum/* \
     ;
 
