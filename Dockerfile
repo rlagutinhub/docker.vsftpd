@@ -1,3 +1,4 @@
+# docker build -f Dockerfile -t vsftpd:latest .
 FROM oraclelinux:7-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
@@ -23,10 +24,10 @@ COPY pam_pwdfile/libpam-pwdfile-master.zip /tmp/libpam-pwdfile-master.zip
 
 RUN set -ex \
     && unzip /tmp/libpam-pwdfile-master.zip -d /tmp \
-    && make -C /tmp/libpam-pwdfile \
-    && cp -p /tmp/libpam-pwdfile/pam_pwdfile.so /usr/lib64/security/ \
+    && make -C /tmp/libpam-pwdfile-master \
+    && cp -p /tmp/libpam-pwdfile-master/pam_pwdfile.so /usr/lib64/security/ \
     && rm -rf /tmp/libpam-pwdfile-master.zip \
-    && rm -rf /tmp/libpam-pwdfile \
+    && rm -rf /tmp/libpam-pwdfile-master \
     ;
 
 COPY vsftpd.conf /etc/vsftpd.conf
