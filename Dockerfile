@@ -14,6 +14,12 @@ RUN set -ex \
     && rm -rf /var/cache/yum/* \
     ;
 
+RUN set -ex \
+    && make -C /tmp/libpam-pwdfile \
+    && cp -p /tmp/libpam-pwdfile/pam_pwdfile.so /usr/lib64/security/ \
+    && rm -rf /tmp/libpam-pwdfile
+    ;
+
 RUN usermod -u ${FTP_UID} ftp
 RUN groupmod -g ${FTP_GID} ftp
 
