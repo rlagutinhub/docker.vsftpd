@@ -3,7 +3,7 @@
 set -ex
 
 # VARIABLES
-FTP_ADM_USER=${FTP_ADM_USER:-"ftpadm"}
+FTP_ADM_NAME=${FTP_ADM_NAME:-"ftpadm"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"1qaz@WSX"}
 
 # SIGTERM handler
@@ -31,17 +31,17 @@ trap _term SIGTERM
 # Set SIGKILL handler
 trap _kill SIGKILL
 
-echo "Adding user ${FTP_ADM_USER}"
-useradd -c "ftp user" -s /sbin/nologin "${FTP_USER}"
-echo -e "${FTP_PASSWORD}" | passwd ${FTP_USER}
-echo "${FTP_USER}" >> /etc/vsftpd/user_list
+> /etc/vsftpd/user_list
+
+echo "Adding user ${FTP_ADM_NAME}"
+htpasswd -c -p -b /etc/vsftpd/users_password "${FTP_ADM_NAME}" $(openssl passwd -1 -noverify "${FTP_ADM_PASS}")
+echo "${FTP_ADM_NAME}" >> /etc/vsftpd/user_list
 
 while read -r user; do
-    IFS=: read -r FTP_USER FTP_PASSWORD <<< "${!user}"
-    echo "Adding user ${FTP_USER}"
-    useradd -c "ftp user" -s /sbin/nologin "${FTP_USER}"
-    echo -e "${FTP_PASSWORD}" | passwd ${FTP_USER}
-    echo "${FTP_USER}" >> /etc/vsftpd/user_list
+    IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_ACCESS <<< "${!user}"
+    echo "Adding user ${FTP_USER_NAME}"
+    htpasswd -c -p -b /etc/vsftpd/users_password "${FTP_USER_NAME}" $(openssl passwd -1 -noverify "${FTP_USER_PASS}")
+    echo "${FTP_USER_NAME}" >> /etc/vsftpd/user_list
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
 ln -sf /dev/stdout /var/log/xferlog
