@@ -23,7 +23,8 @@ RUN set -ex \
 RUN usermod -u ${FTP_UID} ftp
 RUN groupmod -g ${FTP_GID} ftp
 
-COPY vsftpd.conf /etc/vsftpd.conf 
+COPY vsftpd.conf /etc/vsftpd.conf
+COPY vsftpd_virtual /etc/pam.d/
 COPY setup-ftp /usr/local/bin/setup-ftp
 
 EXPOSE 20 21 4559 4560 4561 4562 4563 4564
