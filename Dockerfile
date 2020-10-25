@@ -22,7 +22,7 @@ RUN set -ex \
 RUN set -ex \
     && make -C /tmp/libpam-pwdfile \
     && cp -p /tmp/libpam-pwdfile/pam_pwdfile.so /usr/lib64/security/ \
-    && rm -rf /tmp/libpam-pwdfile
+    && rm -rf /tmp/libpam-pwdfile \
     ;
 
 COPY vsftpd.conf /etc/vsftpd.conf
