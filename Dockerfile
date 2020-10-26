@@ -9,13 +9,13 @@ MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 ARG FTP_UID=1000
 ARG FTP_GID=1000
 
-RUN set -x \
-  && groupadd -g ${FTP_GID} ftpsecure \
-  && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'ftp secure' ftpsecure \
-  ;
-
 ENV LANG=en_US.UTF-8 \
     TZ=Europe/Moscow
+
+RUN set -x \
+    && groupadd -g ${FTP_GID} ftpsecure \
+    && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'ftp secure' ftpsecure \
+    ;
 
 RUN set -ex \
     && microdnf install rootfiles tar gzip \
