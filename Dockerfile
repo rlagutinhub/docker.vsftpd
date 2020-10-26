@@ -1,5 +1,6 @@
 # docker build -f Dockerfile -t vsftpd:latest .
-# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=123456" vsftpd:latest
+# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
+
 FROM oraclelinux:7-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
@@ -17,18 +18,9 @@ ENV LANG=en_US.UTF-8 \
 
 RUN set -ex \
     && yum -y update \
-    && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip zip unzip gcc make pam-devel openssl httpd-tools vsftpd \
+    && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip \
+    && yum -y --setopt=tsflags=nodocs install vsftpd \
     && rm -rf /var/cache/yum/* \
-    ;
-
-COPY pam_pwdfile/libpam-pwdfile-master.zip /tmp/libpam-pwdfile-master.zip
-
-RUN set -ex \
-    && unzip /tmp/libpam-pwdfile-master.zip -d /tmp \
-    && make -C /tmp/libpam-pwdfile-master \
-    && cp -p /tmp/libpam-pwdfile-master/pam_pwdfile.so /usr/lib64/security/ \
-    && rm -rf /tmp/libpam-pwdfile-master.zip \
-    && rm -rf /tmp/libpam-pwdfile-master \
     ;
 
 COPY vsftpd.conf /etc/vsftpd.conf
