@@ -86,8 +86,10 @@ while read -r user; do
     echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> /etc/vsftpd/users_password.tmp
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
-db_load -T -t hash -f /etc/vsftpd/users_password.tmp /etc/vsftpd/users_password
+db_load -T -t hash -f /etc/vsftpd/users_password.tmp /etc/vsftpd/users_password.db
 
-ln -sf /dev/stdout /var/log/xferlog
+mkdir -p /var/log/vsftpd
+touch /var/log/vsftpd/vsftpd.log
+# ln -sf /dev/stdout /var/log/vsftpd/vsftpd.log
 
 &>/dev/null /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf

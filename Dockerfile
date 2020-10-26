@@ -23,7 +23,7 @@ RUN set -ex \
     && rm -rf /var/cache/yum/* \
     ;
 
-COPY vsftpd.conf /etc/vsftpd.conf
+COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
 COPY vsftpd_virtual /etc/pam.d/
 COPY setup-ftp /usr/local/bin/setup-ftp
 
