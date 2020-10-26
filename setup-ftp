@@ -11,30 +11,30 @@ FTP_ADM_PASS=${FTP_ADM_PASS:-"1qaz@WSX"}
 function f_rw_access() {
 
 cat <<EOF > /etc/vsftpd/users_config/$1
-    # the user home
-    local_root=$2
+# the user home
+local_root=$2
 
-    # he can write
-    write_enable=YES
+# he can write
+write_enable=YES
 
-    # read-only disabled
-    anon_world_readable_only=NO
+# read-only disabled
+anon_world_readable_only=NO
 
-    # he can upload
-    anon_upload_enable=YES
+# he can upload
+anon_upload_enable=YES
 
-    # he can create directories
-    anon_mkdir_write_enable=YES
+# he can create directories
+anon_mkdir_write_enable=YES
 
-    # he can perform write operations other than upload and create directory
-    anon_other_write_enable=YES
+# he can perform write operations other than upload and create directory
+anon_other_write_enable=YES
 
-    # he has the same privileges as local local users
-    virtual_use_local_privs=YES
+# he has the same privileges as local local users
+virtual_use_local_privs=YES
 
-    # masks
-    local_umask=022
-    anon_umask=022
+# masks
+local_umask=022
+anon_umask=022
 EOF
 
 }
@@ -44,30 +44,30 @@ EOF
 function f_ro_access() {
 
 cat <<EOF > /etc/vsftpd/users_config/$1
-    # the user home
-    local_root=$2
+# the user home
+local_root=$2
 
-    # he can write
-    write_enable=NO
+# he can write
+write_enable=NO
 
-    # read-only disabled
-    anon_world_readable_only=NO
+# read-only disabled
+anon_world_readable_only=NO
 
-    # he can upload
-    anon_upload_enable=YES
+# he can upload
+anon_upload_enable=YES
 
-    # he can create directories
-    anon_mkdir_write_enable=NO
+# he can create directories
+anon_mkdir_write_enable=NO
 
-    # he can perform write operations other than upload and create directory
-    anon_other_write_enable=NO
+# he can perform write operations other than upload and create directory
+anon_other_write_enable=NO
 
-    # he has the same privileges as local local users
-    virtual_use_local_privs=YES
+# he has the same privileges as local local users
+virtual_use_local_privs=YES
 
-    # masks
-    local_umask=022
-    anon_umask=022
+# masks
+local_umask=022
+anon_umask=022
 EOF
 
 }
