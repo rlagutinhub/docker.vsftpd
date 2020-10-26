@@ -74,7 +74,7 @@ done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
 db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
 # db_dump -p "${BDB}"
-rm -f "${BDB_TMP}"
+# rm -f "${BDB_TMP}"
 
 XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}"| cut -d= -f2)
