@@ -23,8 +23,7 @@ RUN set -ex \
     && microdnf clean all \
     ;
 
-COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
-COPY vsftpd.welcome /etc/vsftpd/vsftpd.welcome
+COPY vsftpd.*/etc/vsftpd/
 COPY vsftpd_virtual /etc/pam.d/
 COPY setup-ftp /usr/local/bin/setup-ftp
 
