@@ -11,8 +11,8 @@ ARG FTP_UID=1000
 ARG FTP_GID=1000
 
 RUN set -x \
-  && groupadd -g ${FTP_GID} ftpsys \
-  && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'ftp system' ftpsys \
+  && groupadd -g ${FTP_GID} ftpdata \
+  && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'ftp data' ftpdata \
   ;
 
 ENV LANG=en_US.UTF-8 \
@@ -21,7 +21,7 @@ ENV LANG=en_US.UTF-8 \
 RUN set -ex \
     && yum -y update \
     && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip \
-    && yum -y --setopt=tsflags=nodocs install vsftpd \
+    && yum -y --setopt=tsflags=nodocs install ftp vsftpd \
     && rm -rf /var/cache/yum/* \
     ;
 
