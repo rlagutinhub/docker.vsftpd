@@ -3,7 +3,7 @@
 set -e
 
 # VARIABLES
-FTP_ADM_NAME=${FTP_ADM_NAME:-"ftpadm"}
+FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
 
 VSFTPD=/usr/sbin/vsftpd

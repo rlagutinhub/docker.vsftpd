@@ -1,6 +1,6 @@
 # docker build -f Dockerfile -t vsftpd:latest .
-# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
-# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -p 32757-32767:32757-32767/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
+# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -e "FTP_ADM_NAME=admin" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
+# docker run --rm -it -p 21:21/tcp -p 20:20/tcp -p 32757-32767:32757-32767/tcp -e "FTP_ADM_NAME=admin" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
 
 FROM oraclelinux:8-slim
 
