@@ -2,7 +2,6 @@
 # docker run --rm -it -p 21:21/tcp -p 20:20/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
 # docker run --rm -it -p 21:21/tcp -p 20:20/tcp -p 32757-32767:32757-32767/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
 
-
 FROM oraclelinux:8-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
@@ -19,7 +18,6 @@ ENV LANG=en_US.UTF-8 \
     TZ=Europe/Moscow
 
 RUN set -ex \
-    && microdnf update \
     && microdnf install rootfiles tar gzip \
     && microdnf install ftp vsftpd \
     && microdnf clean all \
