@@ -6,28 +6,9 @@ set -ex
 FTP_ADM_NAME=${FTP_ADM_NAME:-"ftpadm"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"1qaz@WSX"}
 
-# SIGTERM handler
-function _term() {
-
-   echo "Stopping container."
-   echo "SIGTERM received, shutting down the server!"
-   kill -15 $childPID
-   exit 0 # 128+15
-
-}
-
-# SIGKILL handler
-function _kill() {
-
-   echo "SIGKILL received, shutting down the server!"
-   kill -9 $childPID
-   # exit 137 # 128+9
-
-}
-
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
-function rw_user_settings() {
+function f_rw_access() {
 
 cat <<EOF > /etc/vsftpd/users_config/$1
     # the user home
@@ -60,7 +41,7 @@ EOF
 
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
-function ro_user_settings() {
+function f_ro_access() {
 
 cat <<EOF > /etc/vsftpd/users_config/$1
     # the user home
@@ -91,29 +72,22 @@ EOF
 
 }
 
-# Set SIGTERM handler
-trap _term SIGTERM
-
-# Set SIGKILL handler
-trap _kill SIGKILL
-
-> /etc/vsftpd/user_list
 mkdir -p /etc/vsftpd/users_config
 
 echo "Adding user ${FTP_ADM_NAME}"
-htpasswd -c -p -b /etc/vsftpd/users_password "${FTP_ADM_NAME}" $(openssl passwd -1 -noverify "${FTP_ADM_PASS}")
-echo "${FTP_ADM_NAME}" >> /etc/vsftpd/user_list
+echo "${FTP_ADM_NAME}" > /etc/vsftpd/user_list
+echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > /etc/vsftpd/users_password.tmp
+f_rw_access "${FTP_ADM_NAME}" "/var/ftp"
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_ACCESS <<< "${!user}"
     echo "Adding user ${FTP_USER_NAME}"
-    htpasswd -c -p -b /etc/vsftpd/users_password "${FTP_USER_NAME}" $(openssl passwd -1 -noverify "${FTP_USER_PASS}")
     echo "${FTP_USER_NAME}" >> /etc/vsftpd/user_list
+    echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> /etc/vsftpd/users_password.tmp
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
+
+db_load -T -t hash -f /etc/vsftpd/users_password.tmp /etc/vsftpd/users_password
 
 ln -sf /dev/stdout /var/log/xferlog
 
-vsftpd /etc/vsftpd/vsftpd.conf &
-
-childPID=$!
-wait $childPID
+&>/dev/null /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
