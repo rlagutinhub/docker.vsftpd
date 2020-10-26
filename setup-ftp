@@ -74,8 +74,7 @@ while read -r user; do
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
 db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
-# db_dump -p "${BDB}"
-# rm -f "${BDB_TMP}"
+# db_dump -p "${BDB}"; rm -f "${BDB_TMP}"
 
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi

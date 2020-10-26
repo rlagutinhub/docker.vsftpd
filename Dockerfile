@@ -3,7 +3,7 @@
 # docker run --rm -it -p 21:21/tcp -p 20:20/tcp -p 32757-32767:32757-32767/tcp -e "FTP_ADM_NAME=ftpadm" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
 
 
-FROM oraclelinux:7-slim
+FROM oraclelinux:8-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 
@@ -19,10 +19,10 @@ ENV LANG=en_US.UTF-8 \
     TZ=Europe/Moscow
 
 RUN set -ex \
-    && yum -y update \
-    && yum -y --setopt=tsflags=nodocs install rootfiles tar gzip \
-    && yum -y --setopt=tsflags=nodocs install ftp vsftpd \
-    && rm -rf /var/cache/yum/* \
+    && microdnf update \
+    && microdnf install rootfiles tar gzip \
+    && microdnf install ftp vsftpd \
+    && microdnf clean all \
     ;
 
 COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
