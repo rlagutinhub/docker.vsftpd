@@ -89,7 +89,7 @@ done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 db_load -T -t hash -f /etc/vsftpd/users_password.tmp /etc/vsftpd/users_password.db
 db_dump -p /etc/vsftpd/users_password.db
 
-chown -R ftpdata:ftpdata /var/ftp/pub
+chown -R ftpsys:ftpsys /var/ftp/pub
 
 touch /var/log/xferlog
 # ln -sf /dev/stdout /var/log/xferlog
