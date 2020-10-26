@@ -60,14 +60,12 @@ chown -R ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
 mkdir -p "${USER_CONFIG_DIR}"
 
-echo "Adding user ${FTP_ADM_NAME}"
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_TMP}"
 rw_access "${FTP_ADM_NAME}" "${ROOT}"
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_ACCESS <<< "${!user}"
-    echo "Adding user ${FTP_USER_NAME}"
     echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
     echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_TMP}"
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
