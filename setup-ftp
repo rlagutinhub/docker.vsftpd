@@ -1,14 +1,25 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 # VARIABLES
 FTP_ADM_NAME=${FTP_ADM_NAME:-"ftpadm"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"1qaz@WSX"}
 
+VSFTPD_CONF=/etc/vsftpd/vsftpd.conf 
+VSFTPD_WELCOME=/etc/vsftpd/vsftpd.welcome
+
+BDB_TMP=/etc/vsftpd/users_password.tmp
+BDB=/etc/vsftpd/users_password.db
+
+ROOT=$(grep -w ^local_root "${VSFTPD_CONF}"| cut -d= -f2)
+NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}"| cut -d= -f2)
+USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}"| cut -d= -f2)
+USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}"| cut -d= -f2)
+
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
-function f_rw_access() {
+function rw_access() {
 
 cat <<EOF > /etc/vsftpd/users_config/$1
 local_root=$2
@@ -26,7 +37,7 @@ EOF
 
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
-function f_ro_access() {
+function ro_access() {
 
 cat <<EOF > /etc/vsftpd/users_config/$1
 local_root=$2
@@ -42,27 +53,33 @@ EOF
 
 }
 
-mkdir -p /etc/vsftpd/users_config
+cat "${VSFTPD_WELCOME}"
+
+mkdir -p "${ROOT}"
+chown -R ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
+
+mkdir -p "${USER_CONFIG_DIR}"
 
 echo "Adding user ${FTP_ADM_NAME}"
-echo "${FTP_ADM_NAME}" > /etc/vsftpd/user_list
-echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > /etc/vsftpd/users_password.tmp
-f_rw_access "${FTP_ADM_NAME}" "/var/ftp/pub"
+echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
+echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_TMP}"
+rw_access "${FTP_ADM_NAME}" "${ROOT}"
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_ACCESS <<< "${!user}"
     echo "Adding user ${FTP_USER_NAME}"
-    echo "${FTP_USER_NAME}" >> /etc/vsftpd/user_list
-    echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> /etc/vsftpd/users_password.tmp
+    echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
+    echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_TMP}"
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
-db_load -T -t hash -f /etc/vsftpd/users_password.tmp /etc/vsftpd/users_password.db
-db_dump -p /etc/vsftpd/users_password.db
+db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
+# db_dump -p "${BDB}"
+rm -f "${BDB_TMP}"
 
-chown -R ftpdata:ftpdata /var/ftp/pub
+XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
+VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}"| cut -d= -f2)
 
-LOG_FILE=$(grep xferlog_file /etc/vsftpd/vsftpd.conf|cut -d= -f2)
-# touch ${LOG_FILE}
-# ln -sf /dev/stdout ${LOG_FILE}
+if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
+if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
 &>/dev/null /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
