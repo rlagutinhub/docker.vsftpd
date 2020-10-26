@@ -6,16 +6,19 @@ set -e
 FTP_ADM_NAME=${FTP_ADM_NAME:-"ftpadm"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"1qaz@WSX"}
 
+VSFTPD=/usr/sbin/vsftpd
 VSFTPD_CONF=/etc/vsftpd/vsftpd.conf 
 VSFTPD_WELCOME=/etc/vsftpd/vsftpd.welcome
 
 BDB_TMP=/etc/vsftpd/users_password.tmp
 BDB=/etc/vsftpd/users_password.db
 
-ROOT=$(grep -w ^local_root "${VSFTPD_CONF}"| cut -d= -f2)
-NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}"| cut -d= -f2)
-USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}"| cut -d= -f2)
-USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}"| cut -d= -f2)
+ROOT=$(grep -w ^local_root "${VSFTPD_CONF}" | cut -d= -f2)
+NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
+USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
+USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
+XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
+VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
 
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
@@ -74,10 +77,7 @@ db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
 # db_dump -p "${BDB}"
 # rm -f "${BDB_TMP}"
 
-XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
-VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}"| cut -d= -f2)
-
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
-&>/dev/null /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+&>/dev/null "${VSFTPD}" "${VSFTPD_CONF}"
