@@ -9,8 +9,8 @@ ARG FTP_UID=1000
 ARG FTP_GID=1000
 
 RUN set -x \
-  && groupadd -g ${FTP_GID} vsftpd \
-  && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'vsftpd user' vsftpd \
+  && groupadd -g ${FTP_GID} ftpdata \
+  && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'ftpdata user' ftpdata \
   ;
 
 ENV LANG=en_US.UTF-8 \
