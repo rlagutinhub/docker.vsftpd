@@ -61,8 +61,8 @@ db_dump -p /etc/vsftpd/users_password.db
 
 chown -R ftpdata:ftpdata /var/ftp/pub
 
-# LOG_FILE=$(grep xferlog_file /etc/vsftpd/vsftpd.conf|cut -d= -f2)
-# touch ${LOG_FILE}
-# ln -sf /dev/stdout ${LOG_FILE}
+LOG_FILE=$(grep xferlog_file /etc/vsftpd/vsftpd.conf|cut -d= -f2)
+touch ${LOG_FILE}
+ln -sf /dev/stdout ${LOG_FILE}
 
 &>/dev/null /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
