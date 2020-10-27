@@ -42,23 +42,20 @@ function _kill() {
 
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
-function rw_access() {
+# $3 = $FTP_USER_MOD
+# $4 = $FTP_USER_CWD
+function _access() {
 
-cat <<EOF > /etc/vsftpd/users_config/$1
-local_root=$2
-write_enable=YES
-EOF
-
-}
-
-# $1 = $FTP_USER_NAME
-# $2 = $FTP_USER_DIR
-function ro_access() {
-
-cat <<EOF > /etc/vsftpd/users_config/$1
-local_root=$2
-write_enable=NO
-EOF
+    if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
+    if [ ! -z "${1}" ] && [ ! -z "${2}" ]; then echo -e "local_root=$2" > "${USER_CONFIG_DIR}/$1"; fi
+    if [ ! -z "${1}" ] && [ ! -z "${3}" ]; then
+        if [ "${3,,}" == "ro" ]; then echo -e "write_enable=NO" >> "${USER_CONFIG_DIR}/$1"; fi
+        if [ "${3,,}" == "rw" ]; then echo -e "write_enable=YES" >> "${USER_CONFIG_DIR}/$1"; fi
+    fi
+    if [ ! -z "${1}" ] && [ ! -z "${4}" ]; then
+        if [ "${4,,}" == "false" ]; then echo -e "cmds_denied=CWD" >> "${USER_CONFIG_DIR}/$1"; fi
+        if [ "${4,,}" == "true" ]; then echo -e "cmds_denied=none" >> "${USER_CONFIG_DIR}/$1"; fi
+    fi
 
 }
 
@@ -73,16 +70,17 @@ cat "${VSFTPD_WELCOME}"
 mkdir -p "${ROOT}"
 chown -R ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
-mkdir -p "${USER_CONFIG_DIR}"
-
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_TMP}"
-rw_access "${FTP_ADM_NAME}" "${ROOT}"
+_access "${FTP_ADM_NAME}" "${ROOT}" "RW" "TRUE"
 
 while read -r user; do
-    IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_ACCESS <<< "${!user}"
-    echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
-    echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_TMP}"
+    IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_MOD FTP_USER_CWD <<< "${!user}"
+
+    if [ ! -z "${FTP_USER_NAME}" ] && [ ! -z "${FTP_USER_PASS}" ] && [ ! -z "${FTP_USER_DIR}" ] && [ ! -z "${FTP_USER_MOD}" ] && [ ! -z "${FTP_USER_CWD}" ]: then
+        echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
+        echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_TMP}"
+        _access "${FTP_USER_NAME}" "${FTP_USER_DIR}" "${FTP_USER_MOD}" "${FTP_USER_CWD}"
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
 db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
