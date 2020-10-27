@@ -19,6 +19,7 @@ USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
 USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
 XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
+LISTEN_PORT=$(grep -w ^listen_port "${VSFTPD_CONF}" | cut -d= -f2)
 
 # SIGTERM handler
 function _term() {
@@ -94,9 +95,9 @@ if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")
 childPID=$!
 
 while :; do
-    nc -z localhost 21
+    nc -z localhost ${LISTEN_PORT}
     if [ $? -eq 0 ]; then
-        echo -e "* vsftpd listening on port 21"
+        echo -e "* listening on port ${LISTEN_PORT}"
         break
     fi
     sleep 1
