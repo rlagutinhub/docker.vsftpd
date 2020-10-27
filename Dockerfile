@@ -6,6 +6,7 @@
 
 # Docker volume:
 # docker volume create vsftpd_data
+# docker volume create vsftpd_logs
 
 # Docker container:
 # docker run -dit \
@@ -17,7 +18,8 @@
 #  --stop-timeout 60 \
 #  --memory="2048m" --cpus=1 \
 #  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
-#  -v ftp_data:/var/ftp/pub \
+#  -v vsftpd_data:/var/ftp/pub \
+#  -v vsftpd_logs:/logs \
 #  --name vsftpd \
 #  vsftpd:latest
 
