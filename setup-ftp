@@ -129,7 +129,7 @@ done
 if [ ! -f "${XFERLOG_FILE}" ]; then touch "${XFERLOG_FILE}"; fi
 if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
 
-# ln -sf /proc/1/fd/0 "${VSFTPD_LOG_FILE}"
-tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/0 &
+# tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/1 &
+ln -sf /proc/1/fd/1 "${VSFTPD_LOG_FILE}"
 
 wait $childPID
