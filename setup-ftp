@@ -22,7 +22,7 @@ ROOT=$(grep -w ^local_root "${VSFTPD_CONF}" | cut -d= -f2)
 NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
 USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
 USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
-XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
+# XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
 LISTEN_PORT=$(grep -w ^listen_port "${VSFTPD_CONF}" | cut -d= -f2)
 
@@ -78,9 +78,9 @@ cat "${VSFTPD_WELCOME}"
 if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.${DATE}"; fi
 
 # if [ -f "${XFERLOG_FILE}" ]; then tar czf "${XFERLOG_FILE}.${DATE}.tgz" "${XFERLOG_FILE}" >/dev/null 2>&1; rm -f "${XFERLOG_FILE}"; fi
-# if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
+if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 
-if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
+# if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
 mkdir -p "${ROOT}"
@@ -126,10 +126,10 @@ while :; do
     sleep 1
 done
 
-if [ ! -f "${XFERLOG_FILE}" ]; then touch "${XFERLOG_FILE}"; fi
+# if [ ! -f "${XFERLOG_FILE}" ]; then touch "${XFERLOG_FILE}"; fi
 if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
 
-# tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/1 &
-ln -sf /proc/1/fd/1 "${VSFTPD_LOG_FILE}"
+tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/1 &
+# ln -sf /proc/1/fd/1 "${VSFTPD_LOG_FILE}"
 
 wait $childPID
