@@ -1,5 +1,36 @@
+# Docker Image:
 # docker build -f Dockerfile -t vsftpd:latest .
-# docker run --rm -it -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp -e "FTP_ADM_NAME=admin" -e "FTP_ADM_PASS=passw0rd" vsftpd:latest
+
+# Docker network:
+# docker network create -d bridge vsftpd_net
+
+# Docker volume:
+# docker volume create vsftpd_data
+
+# Docker container:
+# docker run -dit \
+ # -e "FTP_ADM_NAME=admin" \
+ # -e "FTP_ADM_PASS=1qaz@WSX" \
+ # -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:true" \
+ # -e "FTP_USER_2=user1:pass2:/var/ftp/pub/data1/data2:ro:true" \
+ # -e "FTP_USER_2=user1:pass3:/var/ftp/pub/data1/data3:rw:false" \
+ # --stop-timeout 60 \
+ # --memory="2048m" --cpus=1 \
+ # --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
+ # -v ftp_data:/var/ftp/pub \
+ # --name vsftpd \
+ # vsftpd:latest
+
+# Other:
+# docker ps -a
+# docker image ls
+# docker exec -it vsftpd bash
+# docker logs vsftpd
+# docker container stop vsftpd
+# docker container rm vsftpd
+# docker network rm ftp_net
+# docker volume rm ftp_data
+# docker image rm vsftpd:latest
 
 FROM oraclelinux:8-slim
 
