@@ -55,11 +55,14 @@ function _access() {
     local FTP_USER_MOD=$3
     local FTP_USER_CWD=$4
 
+    if [ "${ROOT: -1}" == "/" ]; then local ROOT_MOD="$ROOT"; fi
+    if [ "${ROOT: -1}" != "/" ]; then local ROOT_MOD="${ROOT}/"; fi
+
     local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
 
     if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
 
-    echo "${FTP_USER_DIR_MOD,,}" | grep -q "^${ROOT,,}"
+    echo "${FTP_USER_DIR_MOD,,}" | grep -q "^${ROOT_MOD,,}"
 
     if [ $? -eq 0 ]; then
 
