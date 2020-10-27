@@ -73,8 +73,8 @@ cat "${VSFTPD_WELCOME}"
 if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.$(date +%Y.%m.%d_%H.%M.%S_%N)"; fi
 if [ -f "${USERLIST_FILE}" ]; then cp -fp "${USERLIST_FILE}" "${USERLIST_FILE}.$(date +%Y.%m.%d_%H.%M.%S_%N)"; fi
 
-if [ -f "${XFERLOG_FILE}" ]; then tar czf "${XFERLOG_FILE}.$(date +%Y.%m.%d_%H.%M.%S_%N).tgz" "${XFERLOG_FILE}"; rm -f "${XFERLOG_FILE}"; fi
-if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.$(date +%Y.%m.%d_%H.%M.%S_%N).tgz" "${VSFTPD_LOG_FILE}"; rm -f "${VSFTPD_LOG_FILE}"; fi
+if [ -f "${XFERLOG_FILE}" ]; then tar czf "${XFERLOG_FILE}.$(date +%Y.%m.%d_%H.%M.%S_%N).tgz" "${XFERLOG_FILE}" >/dev/null 2>&1; rm -f "${XFERLOG_FILE}"; fi
+if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.$(date +%Y.%m.%d_%H.%M.%S_%N).tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
