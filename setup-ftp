@@ -61,6 +61,12 @@ EOF
 
 }
 
+# Set SIGTERM handler
+trap _term SIGTERM
+
+# Set SIGKILL handler
+trap _kill SIGKILL
+
 cat "${VSFTPD_WELCOME}"
 
 mkdir -p "${ROOT}"
