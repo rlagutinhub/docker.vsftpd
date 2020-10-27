@@ -1,9 +1,6 @@
 # Docker Image:
 # docker build -f Dockerfile -t vsftpd:latest .
 
-# Docker Network:
-# docker network create -d bridge vsftpd_net
-
 # Docker Volume:
 # docker volume create vsftpd_data
 # docker volume create vsftpd_logs
@@ -17,7 +14,7 @@
 #  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:false" \
 #  --stop-timeout 60 \
 #  --memory="2048m" --cpus=1 \
-#  --network=vsftpd_net -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
+#  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
 #  -v vsftpd_data:/var/ftp/pub \
 #  -v vsftpd_logs:/logs \
 #  --name vsftpd \
