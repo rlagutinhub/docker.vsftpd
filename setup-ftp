@@ -27,13 +27,7 @@ function rw_access() {
 cat <<EOF > /etc/vsftpd/users_config/$1
 local_root=$2
 write_enable=YES
-anon_world_readable_only=NO
-anon_upload_enable=YES
-anon_mkdir_write_enable=YES
-anon_other_write_enable=YES
 virtual_use_local_privs=YES
-local_umask=022
-anon_umask=022
 EOF
 
 }
@@ -45,13 +39,7 @@ function ro_access() {
 cat <<EOF > /etc/vsftpd/users_config/$1
 local_root=$2
 write_enable=NO
-anon_world_readable_only=NO
-anon_upload_enable=YES
-anon_mkdir_write_enable=NO
-anon_other_write_enable=NO
 virtual_use_local_privs=YES
-local_umask=022
-anon_umask=022
 EOF
 
 }
