@@ -12,6 +12,9 @@ VSFTPD=/usr/sbin/vsftpd
 VSFTPD_CONF=/etc/vsftpd/vsftpd.conf 
 VSFTPD_WELCOME=/etc/vsftpd/vsftpd.welcome
 
+VSFTPD_CERTIFICATE=/etc/vsftpd/vsftpd.pem
+VSFTPD_CERTIFICATE_EXP=/etc/vsftpd/vsftpd.pkcs12
+
 BDB_RAW=/etc/vsftpd/users_password
 BDB=/etc/vsftpd/users_password.db
 
@@ -96,8 +99,21 @@ while read -r user; do
     fi
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
+chmod 0600 "${BDB_RAW}"
+chmod 0600 "${BDB}"
+
 db_load -T -t hash -f "${BDB_RAW}" "${BDB}"
 # db_dump -p "${BDB}"; rm -f "${BDB_RAW}"
+
+if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then
+    openssl req -x509 -nodes -days 36500 \
+        -newkey rsa:2048 -keyout "${VSFTPD_CERTIFICATE}" -out "${VSFTPD_CERTIFICATE}" \
+        -subj "/CN=FTP/C=RU/ST=MOSCOW/L=MOSCOW/O=FTP/OU=IT"
+    openssl pkcs12 -export -out "${VSFTPD_CERTIFICATE_EXP}" -in "${VSFTPD_CERTIFICATE}" -passout pass:
+
+    chmod 0600 "${VSFTPD_CERTIFICATE}"
+    chmod 0600 "${VSFTPD_CERTIFICATE_EXP}"
+fi
 
 "${VSFTPD}" "${VSFTPD_CONF}" &
 childPID=$!

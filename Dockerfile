@@ -1,14 +1,14 @@
 # Docker Image:
 # docker build -f Dockerfile -t vsftpd:latest .
 
-# Docker network:
+# Docker Network:
 # docker network create -d bridge vsftpd_net
 
-# Docker volume:
+# Docker Volume:
 # docker volume create vsftpd_data
 # docker volume create vsftpd_logs
 
-# Docker container:
+# Docker Container:
 # docker run -dit \
 #  -e "FTP_ADM_NAME=admin" \
 #  -e "FTP_ADM_PASS=pass0" \
@@ -53,7 +53,7 @@ RUN set -x \
 
 RUN set -ex \
     && microdnf install rootfiles tar gzip \
-    && microdnf install nc ftp vsftpd \
+    && microdnf install openssl nc ftp vsftpd \
     && microdnf clean all \
     ;
 
