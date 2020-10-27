@@ -28,6 +28,7 @@
 # docker image ls
 # docker exec -it vsftpd bash
 # docker logs vsftpd
+# docker container start vsftpd
 # docker container stop vsftpd
 # docker container rm vsftpd
 # docker network rm vsftpd_net
