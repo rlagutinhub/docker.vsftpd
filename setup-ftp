@@ -90,13 +90,13 @@ db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
-&>/dev/null "${VSFTPD}" "${VSFTPD_CONF}" &
+"${VSFTPD}" "${VSFTPD_CONF}" &
 childPID=$!
 
 while :; do
-    &>/dev/null nc -zv localhost 21
+    nc -z localhost 21
     if [ $? -eq 0 ]; then
-        echo -e "                                             vsftpd listening on port 21"
+        echo -e "* vsftpd listening on port 21"
         break
     fi
     sleep 1
