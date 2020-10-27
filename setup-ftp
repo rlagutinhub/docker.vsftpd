@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 # VARIABLES
 FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
@@ -48,17 +46,15 @@ function _kill() {
 # $2 = $FTP_USER_DIR
 # $3 = $FTP_USER_MOD
 # $4 = $FTP_USER_CWD
-function _access() {
+function _config() {
 
     local FTP_USER_NAME=$1
     local FTP_USER_DIR=$2
     local FTP_USER_MOD=$3
     local FTP_USER_CWD=$4
 
-    if [ "${ROOT: -1}" == "/" ]; then local ROOT_MOD="$ROOT"; fi
-    if [ "${ROOT: -1}" != "/" ]; then local ROOT_MOD="${ROOT}/"; fi
-
-    local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local ROOT_MOD=$(echo "${ROOT}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
 
     if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
 
@@ -81,6 +77,9 @@ function _access() {
             echo "cmds_denied=CWD" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
         fi
 
+    else
+        return 1
+
     fi
 
 }
@@ -100,16 +99,20 @@ if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")
 
 mkdir -p "${ROOT}"; chmod 0770 "${ROOT}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
-echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
-echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
-_access "${FTP_ADM_NAME}" "${ROOT}" "RW" "TRUE"
+_config "${FTP_ADM_NAME}" "${ROOT}" "RW" "TRUE"
+if [ $? -eq 0 ]; then
+    echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
+    echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
+fi
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_MOD FTP_USER_CWD <<< "${!user}"
     if [ ! -z "${FTP_USER_NAME}" ] && [ ! -z "${FTP_USER_PASS}" ] && [ ! -z "${FTP_USER_DIR}" ] && [ ! -z "${FTP_USER_MOD}" ] && [ ! -z "${FTP_USER_CWD}" ]; then
-        echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
-        echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_RAW}"
-        _access "${FTP_USER_NAME}" "${FTP_USER_DIR}" "${FTP_USER_MOD}" "${FTP_USER_CWD}"
+        _config "${FTP_USER_NAME}" "${FTP_USER_DIR}" "${FTP_USER_MOD}" "${FTP_USER_CWD}"
+        if [ $? -eq 0 ]; then
+            echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
+            echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_RAW}"
+        fi
     fi
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
