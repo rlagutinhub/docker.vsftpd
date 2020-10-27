@@ -27,7 +27,7 @@
 # docker ps -a
 # docker image ls
 # docker exec -it vsftpd bash
-# docker logs vsftpd
+# docker logs vsftpd --follow
 # docker container start vsftpd
 # docker container stop vsftpd
 # docker container rm vsftpd

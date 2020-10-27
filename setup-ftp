@@ -77,8 +77,8 @@ cat "${VSFTPD_WELCOME}"
 
 if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.${DATE}"; fi
 
-if [ -f "${XFERLOG_FILE}" ]; then tar czf "${XFERLOG_FILE}.${DATE}.tgz" "${XFERLOG_FILE}" >/dev/null 2>&1; rm -f "${XFERLOG_FILE}"; fi
-if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
+# if [ -f "${XFERLOG_FILE}" ]; then tar czf "${XFERLOG_FILE}.${DATE}.tgz" "${XFERLOG_FILE}" >/dev/null 2>&1; rm -f "${XFERLOG_FILE}"; fi
+# if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
@@ -125,5 +125,11 @@ while :; do
     fi
     sleep 1
 done
+
+if [ ! -f "${XFERLOG_FILE}" ]; then touch "${XFERLOG_FILE}"; fi
+if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
+
+# ln -sf /proc/1/fd/0 "${VSFTPD_LOG_FILE}"
+tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/0 &
 
 wait $childPID
