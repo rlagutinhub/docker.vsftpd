@@ -97,7 +97,7 @@ childPID=$!
 while :; do
     nc -z localhost ${LISTEN_PORT}
     if [ $? -eq 0 ]; then
-        echo -e "* listening on port ${LISTEN_PORT}"
+        echo -e "* listening on port ${LISTEN_PORT}\n"
         break
     fi
     sleep 1
