@@ -95,7 +95,7 @@ if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.${DATE}"; fi
 if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
-mkdir -p "${ROOT}"; chmod 0770 "${ROOT}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
+mkdir -p "${ROOT}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
