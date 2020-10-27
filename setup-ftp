@@ -90,7 +90,7 @@ childPID=$!
 while :; do
     &>/dev/null nc -zv localhost 21
     if [ $? -eq 0 ]; then
-        echo -e "\n    vsftpd listening on port 21"
+        echo -e "                                             vsftpd listening on port 21"
         break
     fi
     sleep 1
