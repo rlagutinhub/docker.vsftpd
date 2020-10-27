@@ -105,8 +105,8 @@ db_load -T -t hash -f "${BDB_RAW}" "${BDB}"
 if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then
     openssl req -x509 -nodes -days 36500 \
         -newkey rsa:2048 -keyout "${VSFTPD_CERTIFICATE}" -out "${VSFTPD_CERTIFICATE}" \
-        -subj "/CN=FTP/C=RU/ST=MOSCOW/L=MOSCOW/O=FTP/OU=IT"
-    openssl pkcs12 -export -out "${VSFTPD_CERTIFICATE_EXP}" -in "${VSFTPD_CERTIFICATE}" -passout pass:
+        -subj "/CN=FTP/C=RU/ST=MOSCOW/L=MOSCOW/O=FTP/OU=IT" >/dev/null 2>&1
+    openssl pkcs12 -export -out "${VSFTPD_CERTIFICATE_EXP}" -in "${VSFTPD_CERTIFICATE}" -passout pass: >/dev/null 2>&1
 fi
 
 if [ ! -f "${BDB_RAW}" ]; then chmod 0600 "${BDB_RAW}"; fi
