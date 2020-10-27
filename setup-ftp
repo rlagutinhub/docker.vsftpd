@@ -10,7 +10,7 @@ VSFTPD=/usr/sbin/vsftpd
 VSFTPD_CONF=/etc/vsftpd/vsftpd.conf 
 VSFTPD_WELCOME=/etc/vsftpd/vsftpd.welcome
 
-BDB_TMP=/etc/vsftpd/users_password.tmp
+BDB_RAW=/etc/vsftpd/users_password
 BDB=/etc/vsftpd/users_password.db
 
 ROOT=$(grep -w ^local_root "${VSFTPD_CONF}" | cut -d= -f2)
@@ -71,20 +71,20 @@ mkdir -p "${ROOT}"
 chown -R ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
-echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_TMP}"
+echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
 _access "${FTP_ADM_NAME}" "${ROOT}" "RW" "TRUE"
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_MOD FTP_USER_CWD <<< "${!user}"
-
-    if [ ! -z "${FTP_USER_NAME}" ] && [ ! -z "${FTP_USER_PASS}" ] && [ ! -z "${FTP_USER_DIR}" ] && [ ! -z "${FTP_USER_MOD}" ] && [ ! -z "${FTP_USER_CWD}" ]: then
+    if [ ! -z "${FTP_USER_NAME}" ] && [ ! -z "${FTP_USER_PASS}" ] && [ ! -z "${FTP_USER_DIR}" ] && [ ! -z "${FTP_USER_MOD}" ] && [ ! -z "${FTP_USER_CWD}" ]; then
         echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
-        echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_TMP}"
+        echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_RAW}"
         _access "${FTP_USER_NAME}" "${FTP_USER_DIR}" "${FTP_USER_MOD}" "${FTP_USER_CWD}"
+    fi
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
-db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
-# db_dump -p "${BDB}"; rm -f "${BDB_TMP}"
+db_load -T -t hash -f "${BDB_RAW}" "${BDB}"
+# db_dump -p "${BDB}"; rm -f "${BDB_RAW}"
 
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
