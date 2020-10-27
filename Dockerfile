@@ -11,7 +11,7 @@
 # Docker container:
 # docker run -dit \
 #  -e "FTP_ADM_NAME=admin" \
-#  -e "FTP_ADM_PASS=pass" \
+#  -e "FTP_ADM_PASS=pass0" \
 #  -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:true" \
 #  -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:true" \
 #  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:false" \
