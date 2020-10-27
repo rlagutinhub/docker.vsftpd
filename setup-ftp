@@ -27,7 +27,6 @@ function rw_access() {
 cat <<EOF > /etc/vsftpd/users_config/$1
 local_root=$2
 write_enable=YES
-virtual_use_local_privs=YES
 EOF
 
 }
@@ -39,7 +38,6 @@ function ro_access() {
 cat <<EOF > /etc/vsftpd/users_config/$1
 local_root=$2
 write_enable=NO
-virtual_use_local_privs=YES
 EOF
 
 }
