@@ -64,7 +64,7 @@ function _access() {
     if [ $? -eq 0 ]; then
 
         echo "local_root=${FTP_USER_DIR_MOD}" > "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
-        if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${FTP_USER_DIR_MOD}"; fi
+        if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; chmod 0770 "${FTP_USER_DIR_MOD}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${FTP_USER_DIR_MOD}"; fi
 
         if [ "${FTP_USER_MOD,,}" == "rw" ]; then
             echo "write_enable=YES" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
