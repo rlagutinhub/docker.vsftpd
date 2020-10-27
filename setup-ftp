@@ -50,18 +50,34 @@ function _kill() {
 # $4 = $FTP_USER_CWD
 function _access() {
 
+    local FTP_USER_NAME=$1
+    local FTP_USER_DIR=$2
+    local FTP_USER_MOD=$3
+    local FTP_USER_CWD=$4
+
+    local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+
     if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
-    if [ ! -z "${1}" ] && [ ! -z "${2}" ]; then
-        echo -e "local_root=$2" > "${USER_CONFIG_DIR}/$1"
-        if [ ! -d "${2}" ]; then mkdir -p "${2}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${2}"; fi
-    fi
-    if [ ! -z "${1}" ] && [ ! -z "${3}" ]; then
-        if [ "${3,,}" == "ro" ]; then echo -e "write_enable=NO" >> "${USER_CONFIG_DIR}/$1"; fi
-        if [ "${3,,}" == "rw" ]; then echo -e "write_enable=YES" >> "${USER_CONFIG_DIR}/$1"; fi
-    fi
-    if [ ! -z "${1}" ] && [ ! -z "${4}" ]; then
-        if [ "${4,,}" == "false" ]; then echo -e "cmds_denied=CWD" >> "${USER_CONFIG_DIR}/$1"; fi
-        if [ "${4,,}" == "true" ]; then echo -e "cmds_denied=none" >> "${USER_CONFIG_DIR}/$1"; fi
+
+    echo "${FTP_USER_DIR_MOD,,}" | grep -q "^${ROOT,,}"
+
+    if [ $? -eq 0 ]; then
+
+        echo "local_root=${FTP_USER_DIR_MOD}" > "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
+        if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${FTP_USER_DIR_MOD}"; fi
+
+        if [ "${FTP_USER_MOD,,}" == "rw" ]; then
+            echo "write_enable=YES" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
+        else
+            echo "write_enable=NO" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
+        fi
+
+        if [ "${FTP_USER_CWD,,}" == "true" ]; then
+            echo "cmds_denied=none" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
+        else
+            echo "cmds_denied=CWD" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
+        fi
+
     fi
 
 }
@@ -79,8 +95,7 @@ if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.${DATE}"; fi
 if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
-mkdir -p "${ROOT}"
-chown ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
+mkdir -p "${ROOT}"; chmod 0770 "${ROOT}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
@@ -95,8 +110,7 @@ while read -r user; do
     fi
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
-db_load -T -t hash -f "${BDB_RAW}" "${BDB}"
-# db_dump -p "${BDB}"
+db_load -T -t hash -f "${BDB_RAW}" "${BDB}" # db_dump -p "${BDB}"
 
 if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then
     openssl req -x509 -nodes -days 36500 \
