@@ -47,7 +47,10 @@ function _kill() {
 function _access() {
 
     if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
-    if [ ! -z "${1}" ] && [ ! -z "${2}" ]; then echo -e "local_root=$2" > "${USER_CONFIG_DIR}/$1"; fi
+    if [ ! -z "${1}" ] && [ ! -z "${2}" ]; then
+        echo -e "local_root=$2" > "${USER_CONFIG_DIR}/$1"
+        if [ ! -d "${2}" ]; then mkdir -p "${2}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${2}"; fi
+    fi
     if [ ! -z "${1}" ] && [ ! -z "${3}" ]; then
         if [ "${3,,}" == "ro" ]; then echo -e "write_enable=NO" >> "${USER_CONFIG_DIR}/$1"; fi
         if [ "${3,,}" == "rw" ]; then echo -e "write_enable=YES" >> "${USER_CONFIG_DIR}/$1"; fi
@@ -68,7 +71,7 @@ trap _kill SIGKILL
 cat "${VSFTPD_WELCOME}"
 
 mkdir -p "${ROOT}"
-chown -R ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
+chown ${NOPRIV_USER}:${NOPRIV_USER} "${ROOT}"
 
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
