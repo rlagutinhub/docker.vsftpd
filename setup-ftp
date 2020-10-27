@@ -20,6 +20,25 @@ USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
 XFERLOG_FILE=$(grep -w ^xferlog_file "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
 
+# SIGTERM handler
+function _term() {
+
+   echo "Stopping container."
+   echo "SIGTERM received, shutting down the server!"
+   kill -15 $childPID
+   exit 0 # 128+15
+
+}
+
+# SIGKILL handler
+function _kill() {
+
+   echo "SIGKILL received, shutting down the server!"
+   kill -9 $childPID
+   # exit 137 # 128+9
+
+}
+
 # $1 = $FTP_USER_NAME
 # $2 = $FTP_USER_DIR
 function rw_access() {
@@ -65,4 +84,16 @@ db_load -T -t hash -f "${BDB_TMP}" "${BDB}"
 if [ ! -z "${XFERLOG_FILE}" ]; then mkdir -p "$(dirname "${XFERLOG_FILE}")"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
-&>/dev/null "${VSFTPD}" "${VSFTPD_CONF}"
+&>/dev/null "${VSFTPD}" "${VSFTPD_CONF}" &
+childPID=$!
+
+while :; do
+    &>/dev/null nc -zv localhost 21
+    if [ $? -eq 0 ]; then
+        echo -e "\n    vsftpd listening on port 21"
+        break
+    fi
+    sleep 1
+done
+
+wait $childPID

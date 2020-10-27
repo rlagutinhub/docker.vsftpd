@@ -18,7 +18,7 @@ RUN set -x \
 
 RUN set -ex \
     && microdnf install rootfiles tar gzip \
-    && microdnf install ftp vsftpd \
+    && microdnf install nc ftp vsftpd \
     && microdnf clean all \
     ;
 
