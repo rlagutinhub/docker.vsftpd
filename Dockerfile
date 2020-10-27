@@ -17,7 +17,7 @@
 #  -e "FTP_USER_3=user1:pass3:/var/ftp/pub/data1/data3:rw:false" \
 #  --stop-timeout 60 \
 #  --memory="2048m" --cpus=1 \
-#  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
+#  --network=vsftpd_net -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
 #  -v vsftpd_data:/var/ftp/pub \
 #  -v vsftpd_logs:/logs \
 #  --name vsftpd \
@@ -30,8 +30,9 @@
 # docker logs vsftpd
 # docker container stop vsftpd
 # docker container rm vsftpd
-# docker network rm ftp_net
-# docker volume rm ftp_data
+# docker network rm vsftpd_net
+# docker volume rm vsftpd_data
+# docker volume rm vsftpd_logs
 # docker image rm vsftpd:latest
 
 FROM oraclelinux:8-slim
