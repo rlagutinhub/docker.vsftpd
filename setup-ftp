@@ -99,9 +99,6 @@ while read -r user; do
     fi
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
-chmod 0600 "${BDB_RAW}"
-chmod 0600 "${BDB}"
-
 db_load -T -t hash -f "${BDB_RAW}" "${BDB}"
 # db_dump -p "${BDB}"; rm -f "${BDB_RAW}"
 
@@ -110,10 +107,12 @@ if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then
         -newkey rsa:2048 -keyout "${VSFTPD_CERTIFICATE}" -out "${VSFTPD_CERTIFICATE}" \
         -subj "/CN=FTP/C=RU/ST=MOSCOW/L=MOSCOW/O=FTP/OU=IT"
     openssl pkcs12 -export -out "${VSFTPD_CERTIFICATE_EXP}" -in "${VSFTPD_CERTIFICATE}" -passout pass:
-
-    chmod 0600 "${VSFTPD_CERTIFICATE}"
-    chmod 0600 "${VSFTPD_CERTIFICATE_EXP}"
 fi
+
+if [ ! -f "${BDB_RAW}" ]; then chmod 0600 "${BDB_RAW}"; fi
+if [ ! -f "${BDB}" ]; then chmod 0600 "${BDB}"; fi
+if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE}"; fi
+if [ ! -f "${VSFTPD_CERTIFICATE_EXP}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE_EXP}"; fi
 
 "${VSFTPD}" "${VSFTPD_CONF}" &
 childPID=$!
