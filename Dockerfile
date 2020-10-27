@@ -13,8 +13,8 @@
 #  -e "FTP_ADM_NAME=admin" \
 #  -e "FTP_ADM_PASS=1qaz@WSX" \
 #  -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:true" \
-#  -e "FTP_USER_2=user1:pass2:/var/ftp/pub/data1/data2:ro:true" \
-#  -e "FTP_USER_3=user1:pass3:/var/ftp/pub/data1/data3:rw:false" \
+#  -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:true" \
+#  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:false" \
 #  --stop-timeout 60 \
 #  --memory="2048m" --cpus=1 \
 #  --network=vsftpd_net -p 20:20/tcp -p 21:21/tcp -p 32500-32550:32500-32550/tcp \
