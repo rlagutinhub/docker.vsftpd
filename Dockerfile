@@ -58,6 +58,6 @@ COPY vsftpd.* /etc/vsftpd/
 COPY vsftpd_virtual /etc/pam.d/
 COPY setup-ftp /usr/local/bin/
 
-EXPOSE 20 21 32500-32550
+# EXPOSE 20 21 32500-32550
 
 CMD ["setup-ftp"]
