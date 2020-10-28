@@ -50,10 +50,10 @@ function _kill() {
 
 }
 
-# $1 - the setting/property to set
-# $2 - the new value
-# $3 - the path to vsftpd.conf
-function _config() {
+# $1 = PROPERTY
+# $2 = VALUE
+# $3 = FILE
+function _update() {
 
     sed -i s~"\#\? \?${1} \?=.*"~"${1}=${2}"~g "${3}"
 
@@ -82,13 +82,13 @@ function _config() {
         echo "local_root=${FTP_USER_DIR_MOD}" > "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; chmod 0770 "${FTP_USER_DIR_MOD}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${FTP_USER_DIR_MOD}"; fi
 
-        if [ "${FTP_USER_MOD,,}" == "rw" ]; then
+        if [ "${FTP_USER_MOD^^}" == "RW" ]; then
             echo "write_enable=YES" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
         else
             echo "write_enable=NO" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
         fi
 
-        if [ "${FTP_USER_CWD,,}" == "true" ]; then
+        if [ "${FTP_USER_CWD^^}" == "YES" ]; then
             echo "cmds_denied=none" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
         else
             echo "cmds_denied=CWD" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
@@ -111,7 +111,21 @@ if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.${DATE}"; fi
 if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 
-_config "${FTP_ADM_NAME}" "${ROOT}" "RW" "TRUE"
+if [ "${FTP_FORCE_SSL^^}" == "YES" ]; then
+    _update "force_local_data_ssl" "YES" "${VSFTPD_CONF}"
+    _update "force_local_logins_ssl" "YES" "${VSFTPD_CONF}"
+else
+    _update "force_local_data_ssl" "NO" "${VSFTPD_CONF}"
+    _update "force_local_logins_ssl" "NO" "${VSFTPD_CONF}"
+fi
+
+if [[ "${FTP_LISTEN_PORT}" =~ ^[0-9]+$ ]]; then _update "listen_port" "${FTP_LISTEN_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
+if [[ "${FTP_DATA_PORT}" =~ ^[0-9]+$ ]]; then _update "listen_port" "${FTP_DATA_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
+
+if [[ "${PASV_MIN_PORT}" =~ ^[0-9]+$ ]]; then _update "listen_port" "${PASV_MIN_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
+if [[ "${PASV_MAX_PORT}" =~ ^[0-9]+$ ]]; then _update "listen_port" "${PASV_MAX_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
+
+_config "${FTP_ADM_NAME}" "${ROOT}" "RW" "YES"
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
 
