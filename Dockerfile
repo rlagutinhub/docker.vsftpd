@@ -49,14 +49,14 @@ RUN set -x \
     ;
 
 RUN set -ex \
-    && microdnf install rootfiles tar gzip \
+    && microdnf install rootfiles tar gzip glibc-langpack-ru \
     && microdnf install openssl nc ftp vsftpd \
     && microdnf clean all \
     ;
 
 COPY vsftpd.* /etc/vsftpd/
 COPY vsftpd_virtual /etc/pam.d/
-COPY setup-ftp /usr/local/bin/setup-ftp
+COPY setup-ftp /usr/local/bin/
 
 EXPOSE 20 21 32500-32550
 
