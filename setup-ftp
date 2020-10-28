@@ -93,6 +93,8 @@ function _config() {
         else
             echo "cmds_denied=CWD" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
         fi
+    else
+        exit 1
 
     fi
 
