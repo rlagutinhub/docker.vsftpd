@@ -6,6 +6,12 @@ set -e
 FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
 
+FTP_FORCE_SSL=${FORCE_SSL:-"false"}
+FTP_LISTEN_PORT=${FTP_LISTEN_PORT:-"21"}
+FTP_DATA_PORT=${FTP_DATA_PORT:-"20"}
+FTP_PASV_MIN_PORT=${FTP_PASV_MIN_PORT:-"32500"}
+FTP_PASV_MAX_PORT=${FTP_PASV_MAX_PORT:-"32599"}
+
 DATE=$(date +%Y.%m.%d_%H.%M.%S_%N)
 
 VSFTPD=/usr/sbin/vsftpd
@@ -41,6 +47,15 @@ function _kill() {
    echo "SIGKILL received, shutting down the server!"
    kill -9 $childPID
    # exit 137 # 128+9
+
+}
+
+# $1 - the setting/property to set
+# $2 - the new value
+# $3 - the path to vsftpd.conf
+function _config() {
+
+    sed -i s~"\#\? \?${1} \?=.*"~"${1}=${2}"~g "${3}"
 
 }
 
