@@ -40,7 +40,7 @@ MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 ARG FTP_UID=1000
 ARG FTP_GID=1000
 
-ENV LANG=en_US.UTF-8 \
+ENV LANG=ru_RU.UTF-8 \
     TZ=Europe/Moscow
 
 RUN set -x \
