@@ -27,7 +27,7 @@
 # docker logs vsftpd --follow
 # docker container start vsftpd
 # docker container stop vsftpd
-# docker container rm vsftpd
+# docker container rm -f vsftpd
 # docker network rm vsftpd_net
 # docker volume rm vsftpd_data
 # docker volume rm vsftpd_logs
