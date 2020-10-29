@@ -2,7 +2,6 @@
 
 set -e
 
-# VARIABLES
 FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
 
@@ -83,7 +82,7 @@ function _config() {
 
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
-        if [ $(stat -c "%a" "${FTP_USER_DIR_MOD}") -ne 770 ]; then chmod 0770 "${FTP_USER_DIR_MOD}"; fi 
+        if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "770" ]; then chmod 0770 "${FTP_USER_DIR_MOD}"; fi 
         if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
         if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
 
