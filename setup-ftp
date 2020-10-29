@@ -28,7 +28,6 @@ NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
 USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
 USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
-LISTEN_PORT=$(grep -w ^listen_port "${VSFTPD_CONF}" | cut -d= -f2)
 
 # SIGTERM handler
 function _term() {
@@ -163,9 +162,9 @@ if [ ! -f "${VSFTPD_CERTIFICATE_EXP}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE_E
 childPID=$!
 
 while true; do
-    nc -z localhost ${LISTEN_PORT}
+    nc -z localhost ${FTP_LISTEN_PORT}
     if [ $? -eq 0 ]; then
-        echo -e "* listening on port ${LISTEN_PORT}\n"
+        echo -e "* listening on port ${FTP_LISTEN_PORT}\n"
         break
     fi
     sleep 1
