@@ -1,4 +1,4 @@
-# VSFTPD Server in a Docker
+# vsFTPD Server in a Docker
 ```
 ```
 This vsftpd docker image is based on official oraclelinux:8-slim image and comes with following features:  
