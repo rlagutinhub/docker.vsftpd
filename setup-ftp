@@ -80,7 +80,11 @@ function _config() {
     if [ $? -eq 0 ]; then
 
         echo "local_root=${FTP_USER_DIR_MOD}" > "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
-        if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; chmod 0770 "${FTP_USER_DIR_MOD}"; chown ${NOPRIV_USER}:${NOPRIV_USER} "${FTP_USER_DIR_MOD}"; fi
+
+        if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
+        if [ $(stat -c "%a" "${FTP_USER_DIR_MOD}") -ne 770 ]; then chmod 0770 "${FTP_USER_DIR_MOD}"; fi 
+        if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
+        if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
 
         if [ "${FTP_USER_MOD^^}" == "RW" ]; then
             echo "write_enable=YES" >> "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
@@ -109,6 +113,7 @@ trap _kill SIGKILL
 cat "${VSFTPD_WELCOME}"
 
 if [ -f "${BDB_RAW}" ]; then cp -fp "${BDB_RAW}" "${BDB_RAW}.${DATE}"; fi
+if [ -f "${VSFTPD_CONF}" ]; then cp -fp "${VSFTPD_CONF}" "${VSFTPD_CONF}.${DATE}"; fi
 
 if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; rm -f "${VSFTPD_LOG_FILE}"; fi
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
@@ -157,7 +162,7 @@ if [ ! -f "${VSFTPD_CERTIFICATE_EXP}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE_E
 "${VSFTPD}" "${VSFTPD_CONF}" &
 childPID=$!
 
-while :; do
+while true; do
     nc -z localhost ${LISTEN_PORT}
     if [ $? -eq 0 ]; then
         echo -e "* listening on port ${LISTEN_PORT}\n"
