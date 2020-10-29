@@ -148,10 +148,10 @@ if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then
     openssl pkcs12 -export -out "${VSFTPD_CERTIFICATE_EXP}" -in "${VSFTPD_CERTIFICATE}" -passout pass: >/dev/null 2>&1
 fi
 
-if [ ! -f "${BDB_RAW}" ]; then chmod 0600 "${BDB_RAW}"; fi
-if [ ! -f "${BDB}" ]; then chmod 0600 "${BDB}"; fi
-if [ ! -f "${VSFTPD_CERTIFICATE}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE}"; fi
-if [ ! -f "${VSFTPD_CERTIFICATE_EXP}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE_EXP}"; fi
+if [ -f "${BDB_RAW}" ]; then chmod 0600 "${BDB_RAW}"; fi
+if [ -f "${BDB}" ]; then chmod 0600 "${BDB}"; fi
+if [ -f "${VSFTPD_CERTIFICATE}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE}"; fi
+if [ -f "${VSFTPD_CERTIFICATE_EXP}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE_EXP}"; fi
 
 "${VSFTPD}" "${VSFTPD_CONF}" &
 childPID=$!
