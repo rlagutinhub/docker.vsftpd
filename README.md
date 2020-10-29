@@ -1,7 +1,7 @@
 # VSFTPD Server in a Docker
 ```
 ```
-This vsftpd docker image is based on official oraclelinux:8-slim base image and comes with following features:  
+This vsftpd docker image is based on official oraclelinux:8-slim image and comes with following features:  
 
  * Virtual users
  * Active and Passive mode
