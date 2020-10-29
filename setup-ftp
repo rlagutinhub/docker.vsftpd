@@ -82,6 +82,7 @@ function _config() {
         echo "local_root=${FTP_USER_DIR_MOD}" > "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
 
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
+
         if [ $(stat -c "%a" "${FTP_USER_DIR_MOD}") -ne 770 ]; then chmod 0770 "${FTP_USER_DIR_MOD}"; fi 
         if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
         if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
