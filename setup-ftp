@@ -16,7 +16,6 @@ DATE=$(date +%Y.%m.%d_%H.%M.%S_%N)
 VSFTPD=/usr/sbin/vsftpd
 VSFTPD_CONF=/etc/vsftpd/vsftpd.conf 
 VSFTPD_WELCOME=/etc/vsftpd/vsftpd.welcome
-
 VSFTPD_CERTIFICATE=/etc/vsftpd/vsftpd.pem
 VSFTPD_CERTIFICATE_EXP=/etc/vsftpd/vsftpd.pkcs12
 
