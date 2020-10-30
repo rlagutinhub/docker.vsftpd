@@ -162,6 +162,18 @@ if [ -f "${BDB}" ]; then chmod 0600 "${BDB}"; fi
 if [ -f "${VSFTPD_CERTIFICATE}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE}"; fi
 if [ -f "${VSFTPD_CERTIFICATE_EXP}" ]; then chmod 0600 "${VSFTPD_CERTIFICATE_EXP}"; fi
 
+if [ -L "${VSFTPD_LOG_FILE}" ]; then rm -f "${VSFTPD_LOG_FILE}"; fi
+if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; > "${VSFTPD_LOG_FILE}"; fi
+
+if [ ! -d "$(dirname "${VSFTPD_LOG_FILE}")" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
+if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
+
+if [ "${FTP_LOG_FILE^^}" == "YES" ]; then
+    tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/1 &
+else
+    ln -sf /proc/1/fd/1 "${VSFTPD_LOG_FILE}"
+fi
+
 "${VSFTPD}" "${VSFTPD_CONF}" &
 childPID=$!
 
@@ -175,17 +187,5 @@ while true; do
     fi
     sleep 1
 done
-
-if [ -L "${VSFTPD_LOG_FILE}" ]; then rm -f "${VSFTPD_LOG_FILE}"; fi
-if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; > "${VSFTPD_LOG_FILE}"; fi
-
-if [ ! -d "$(dirname "${VSFTPD_LOG_FILE}")" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
-if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
-
-if [ "${FTP_LOG_FILE^^}" == "YES" ]; then
-    tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/1 &
-else
-    ln -sf /proc/1/fd/1 "${VSFTPD_LOG_FILE}"
-fi
 
 wait $childPID
