@@ -111,6 +111,8 @@ trap _term SIGTERM
 # Set SIGKILL handler
 trap _kill SIGKILL
 
+if [ -f "${USERLIST_FILE}" ]; then > "${USERLIST_FILE}"; fi
+
 if [ "${FTP_ANONYMOUS^^}" == "YES" ]; then
     _update "anonymous_enable" "YES" "${VSFTPD_CONF}"
     _update "allow_anon_ssl" "YES" "${VSFTPD_CONF}"
