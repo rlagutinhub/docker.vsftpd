@@ -2,7 +2,6 @@
 
 set -e
 
-FTP_ANONYMOUS=${FTP_ANONYMOUS:-"NO"}
 FTP_FORCE_SSL=${FTP_FORCE_SSL:-"NO"}
 FTP_LOG_FILE=${FTP_LOG_FILE:-"NO"}
 
@@ -26,8 +25,7 @@ BDB_RAW=/etc/vsftpd/users_password
 BDB=/etc/vsftpd/users_password.db
 
 ROOT=$(grep -w ^local_root "${VSFTPD_CONF}" | cut -d= -f2)
-# NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
-NOPRIV_USER=ftp
+NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
 USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
 USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
@@ -113,15 +111,6 @@ trap _term SIGTERM
 trap _kill SIGKILL
 
 if [ -f "${USERLIST_FILE}" ]; then > "${USERLIST_FILE}"; fi
-
-if [ "${FTP_ANONYMOUS^^}" == "YES" ]; then
-    _update "anonymous_enable" "YES" "${VSFTPD_CONF}"
-    _update "allow_anon_ssl" "YES" "${VSFTPD_CONF}"
-    echo "anonymous" >> "${USERLIST_FILE}"
-else
-    _update "anonymous_enable" "NO" "${VSFTPD_CONF}"
-    _update "allow_anon_ssl" "NO" "${VSFTPD_CONF}"
-fi
 
 if [ "${FTP_FORCE_SSL^^}" == "YES" ]; then
     _update "force_local_data_ssl" "YES" "${VSFTPD_CONF}"

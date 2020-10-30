@@ -13,27 +13,6 @@ Environment variables
 
 This image uses environment variables to allow the configuration of some parameters at run time:
 
-* Variable name: `FTP_ADM_NAME`
-* Default value: admin
-* Accepted values: Any string. Avoid whitespaces and special chars.
-* Description: Username for the admin FTP account. If you don't specify it through the `FTP_ADM_NAME` environment variable at run time, `admin` will be used by default.
-
-----
-
-* Variable name: `FTP_ADM_PASS`
-* Default value: passw0rd
-* Accepted values: Any string.
-* Description: If you don't specify a password for the admin FTP account through `FTP_ADM_PASS` environment variable at run time, `passw0rd` will be used by default.
-
-----
-
-* Variable name: `FTP_ANONYMOUS`
-* Default value: NO
-* Accepted values: <NO|YES>
-* Description: Set to YES if you want to allow access to user anonymous need to have full access to files in `/var/ftp/pub` directory.
-
-----
-
 * Variable name: `FTP_FORCE_SSL`
 * Default value: NO
 * Accepted values: <NO|YES>
@@ -81,6 +60,20 @@ This image uses environment variables to allow the configuration of some paramet
 * Accepted values: Any valid port number.
 * Description: This will be used as the upper bound of the passive mode port range. It will take longer to start a container with a high number of published ports.
 
+----
+
+* Variable name: `FTP_ADM_NAME`
+* Default value: admin
+* Accepted values: Any string. Avoid whitespaces and special chars.
+* Description: Username for the admin FTP account. If you don't specify it through the `FTP_ADM_NAME` environment variable at run time, `admin` will be used by default.
+
+----
+
+* Variable name: `FTP_ADM_PASS`
+* Default value: passw0rd
+* Accepted values: Any string.
+* Description: If you don't specify a password for the admin FTP account through `FTP_ADM_PASS` environment variable at run time, `passw0rd` will be used by default.
+
 
 Use cases
 ----
@@ -102,7 +95,6 @@ docker volume create vsftpd_logs
 
 ```bash
 docker run -dit \
- -e "FTP_ANONYMOUS=NO" \
  -e "FTP_FORCE_SSL=NO" \
  -e "FTP_LOG_FILE=NO" \
  -e "FTP_LISTEN_PORT=21" \
