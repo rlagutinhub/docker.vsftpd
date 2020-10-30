@@ -113,8 +113,10 @@ trap _kill SIGKILL
 
 if [ "${FTP_ANONYMOUS^^}" == "YES" ]; then
     _update "anonymous_enable" "YES" "${VSFTPD_CONF}"
+    _update "allow_anon_ssl" "YES" "${VSFTPD_CONF}"
 else
     _update "anonymous_enable" "NO" "${VSFTPD_CONF}"
+    _update "allow_anon_ssl" "NO" "${VSFTPD_CONF}"
 fi
 
 if [ "${FTP_FORCE_SSL^^}" == "YES" ]; then
