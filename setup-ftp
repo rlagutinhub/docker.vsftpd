@@ -26,7 +26,8 @@ BDB_RAW=/etc/vsftpd/users_password
 BDB=/etc/vsftpd/users_password.db
 
 ROOT=$(grep -w ^local_root "${VSFTPD_CONF}" | cut -d= -f2)
-NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
+# NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
+NOPRIV_USER=ftp
 USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
 USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
 VSFTPD_LOG_FILE=$(grep -w ^vsftpd_log_file "${VSFTPD_CONF}" | cut -d= -f2)
