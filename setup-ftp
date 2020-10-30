@@ -5,7 +5,9 @@ set -e
 FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
 
+FTP_ANONYMOUS=${FTP_ANONYMOUS:-"NO"}
 FTP_FORCE_SSL=${FTP_FORCE_SSL:-"NO"}
+
 FTP_LISTEN_PORT=${FTP_LISTEN_PORT:-"21"}
 FTP_DATA_PORT=${FTP_DATA_PORT:-"20"}
 FTP_PASV_MIN_PORT=${FTP_PASV_MIN_PORT:-"32500"}
@@ -110,6 +112,12 @@ trap _kill SIGKILL
 
 if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
 if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; > "${VSFTPD_LOG_FILE}"; fi
+
+if [ "${FTP_ANONYMOUS^^}" == "YES" ]; then
+    _update "anonymous_enable" "YES" "${VSFTPD_CONF}"
+else
+    _update "anonymous_enable" "NO" "${VSFTPD_CONF}"
+fi
 
 if [ "${FTP_FORCE_SSL^^}" == "YES" ]; then
     _update "force_local_data_ssl" "YES" "${VSFTPD_CONF}"
