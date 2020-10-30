@@ -27,10 +27,24 @@ This image uses environment variables to allow the configuration of some paramet
 
 ----
 
+* Variable name: `FTP_ANONYMOUS`
+* Default value: NO
+* Accepted values: <NO|YES>
+* Description: Set to YES if you want to allow access to user anonymous need to have full access to files in `/var/ftp/pub` directory.
+
+----
+
 * Variable name: `FTP_FORCE_SSL`
 * Default value: NO
 * Accepted values: <NO|YES>
 * Description: Set to YES if you want to allow use force secured SSL connections.
+
+----
+
+* Variable name: `FTP_LOG_FILE`
+* Default value: NO
+* Accepted values: <NO|YES>
+* Description: Set to YES if you want the log file to be written in `/logs/vsftpd/vsftpd.log`.
 
 ----
 
@@ -66,13 +80,6 @@ This image uses environment variables to allow the configuration of some paramet
 * Default value: 32599
 * Accepted values: Any valid port number.
 * Description: This will be used as the upper bound of the passive mode port range. It will take longer to start a container with a high number of published ports.
-
-----
-
-* Variable name: `LOG_STDOUT` ???
-* Default value: Empty string.
-* Accepted values: Any string to enable, empty string or not defined to disable.
-* Description: Output vsftpd log through STDOUT, so that it can be accessed through the [container logs](https://docs.docker.com/engine/reference/commandline/container_logs).
 
 
 Use cases
