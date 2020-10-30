@@ -92,20 +92,20 @@ Use cases
 
 1) Docker Image:
 
-```bash
+```
 docker build -f Dockerfile -t vsftpd:latest .
 ```
 
 2) Docker Volume:
 
-```bash
+```
 docker volume create vsftpd_data
 docker volume create vsftpd_logs
 ```
 
 3) Docker Container:
 
-```bash
+```
 docker run -dit \
  -e "FTP_FORCE_SSL=NO" \
  -e "FTP_LOG_FILE=NO" \
@@ -130,7 +130,7 @@ docker run -dit \
 
 4) Other:
 
-```bash
+```
 docker ps -a
 docker image ls
 docker exec -it vsftpd bash
