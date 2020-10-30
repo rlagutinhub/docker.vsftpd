@@ -65,14 +65,22 @@ This image uses environment variables to allow the configuration of some paramet
 * Variable name: `FTP_ADM_NAME`
 * Default value: admin
 * Accepted values: Any string. Avoid whitespaces and special chars.
-* Description: Username for the admin FTP account. If you don't specify it through the `FTP_ADM_NAME` environment variable at run time, `admin` will be used by default.
+* Description: Username for the full access FTP account. If you don't specify it through the `FTP_ADM_NAME` environment variable at run time, `admin` will be used by default.
 
 ----
 
 * Variable name: `FTP_ADM_PASS`
 * Default value: passw0rd
 * Accepted values: Any string.
-* Description: If you don't specify a password for the admin FTP account through `FTP_ADM_PASS` environment variable at run time, `passw0rd` will be used by default.
+* Description: If you don't specify a password for the full access FTP account through `FTP_ADM_PASS` environment variable at run time, `passw0rd` will be used by default.
+
+----
+
+* Variable name: `FTP_USER_1,,,N`
+* Default value: empty
+* Accepted values: username:password:local_root:access_mode:cmd
+* * test
+* Description: Adds multiple users. Value must be in the form of `username:password:local_root:access_mode:cmd`.
 
 
 Use cases
