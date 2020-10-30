@@ -88,7 +88,7 @@ Use cases
 1) Docker Image:
 
 ```bash
-  docker build -f Dockerfile -t vsftpd:latest .
+docker build -f Dockerfile -t vsftpd:latest .
 ```
 
 2) Docker Volume:
