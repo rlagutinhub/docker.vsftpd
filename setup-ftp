@@ -133,6 +133,8 @@ if [[ "${FTP_DATA_PORT}" =~ ^[0-9]+$ ]]; then _update "ftp_data_port" "${FTP_DAT
 if [[ "${FTP_PASV_MIN_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_min_port" "${FTP_PASV_MIN_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
 if [[ "${FTP_PASV_MAX_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_max_port" "${FTP_PASV_MAX_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
 
+if [ "${FTP_PASV_MAX_PORT}" -le "${FTP_PASV_MIN_PORT}" ]; then exit 1; fi
+
 _config "${FTP_ADM_NAME}" "${ROOT}" "RW" "YES"
 echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
