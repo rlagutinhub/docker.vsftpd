@@ -114,6 +114,7 @@ trap _kill SIGKILL
 if [ "${FTP_ANONYMOUS^^}" == "YES" ]; then
     _update "anonymous_enable" "YES" "${VSFTPD_CONF}"
     _update "allow_anon_ssl" "YES" "${VSFTPD_CONF}"
+    echo "anonymous" >> "${USERLIST_FILE}"
 else
     _update "anonymous_enable" "NO" "${VSFTPD_CONF}"
     _update "allow_anon_ssl" "NO" "${VSFTPD_CONF}"
@@ -136,7 +137,7 @@ if [[ "${FTP_PASV_MAX_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_max_port" "${FTP
 if [ "${FTP_PASV_MAX_PORT}" -le "${FTP_PASV_MIN_PORT}" ]; then exit 1; fi
 
 _config "${FTP_ADM_NAME}" "${ROOT}" "RW" "YES"
-echo "${FTP_ADM_NAME}" > "${USERLIST_FILE}"
+echo "${FTP_ADM_NAME}" >> "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
 
 while read -r user; do
