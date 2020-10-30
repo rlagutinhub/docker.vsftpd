@@ -8,8 +8,10 @@
 # Docker Container:
 # docker run -dit \
 #  -e "FTP_FORCE_SSL=NO" \
+#  -e "FTP_LOG_FILE=NO" \
 #  -e "FTP_LISTEN_PORT=21" \
 #  -e "FTP_DATA_PORT=20" \
+#  -e "FTP_PASV_ADDRESS=NO" \
 #  -e "FTP_PASV_MIN_PORT=32500" \
 #  -e "FTP_PASV_MAX_PORT=32599" \
 #  -e "FTP_ADM_NAME=admin" \
