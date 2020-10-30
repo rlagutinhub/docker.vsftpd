@@ -174,10 +174,12 @@ while true; do
     sleep 1
 done
 
+if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; > "${VSFTPD_LOG_FILE}"; fi
+
+if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
+if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
+
 if [ "${FTP_LOG_FILE^^}" == "YES" ]; then
-    if [ -f "${VSFTPD_LOG_FILE}" ]; then tar czf "${VSFTPD_LOG_FILE}.${DATE}.tgz" "${VSFTPD_LOG_FILE}" >/dev/null 2>&1; > "${VSFTPD_LOG_FILE}"; fi
-    if [ ! -z "${VSFTPD_LOG_FILE}" ]; then mkdir -p "$(dirname "${VSFTPD_LOG_FILE}")"; fi
-    if [ ! -f "${VSFTPD_LOG_FILE}" ]; then touch "${VSFTPD_LOG_FILE}"; fi
     tail -n 0 -q -F "${VSFTPD_LOG_FILE}" >> /proc/1/fd/1 &
 else
     ln -sf /proc/1/fd/1 "${VSFTPD_LOG_FILE}"
