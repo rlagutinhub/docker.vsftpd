@@ -7,6 +7,8 @@ FTP_LOG_FILE=${FTP_LOG_FILE:-"NO"}
 
 FTP_LISTEN_PORT=${FTP_LISTEN_PORT:-"21"}
 FTP_DATA_PORT=${FTP_DATA_PORT:-"20"}
+
+FTP_PASV_ADDRESS=${FTP_PASV_ADDRESS:-"NO"}
 FTP_PASV_MIN_PORT=${FTP_PASV_MIN_PORT:-"32500"}
 FTP_PASV_MAX_PORT=${FTP_PASV_MAX_PORT:-"32599"}
 
@@ -122,6 +124,8 @@ fi
 
 if [[ "${FTP_LISTEN_PORT}" =~ ^[0-9]+$ ]]; then _update "listen_port" "${FTP_LISTEN_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
 if [[ "${FTP_DATA_PORT}" =~ ^[0-9]+$ ]]; then _update "ftp_data_port" "${FTP_DATA_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
+
+if [ "${FTP_PASV_ADDRESS^^}" != "NO" ]; then _update "pasv_address" "${FTP_PASV_ADDRESS^^}" "${VSFTPD_CONF}"; fi
 
 if [[ "${FTP_PASV_MIN_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_min_port" "${FTP_PASV_MIN_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
 if [[ "${FTP_PASV_MAX_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_max_port" "${FTP_PASV_MAX_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
