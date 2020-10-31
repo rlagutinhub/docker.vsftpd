@@ -88,11 +88,12 @@ function _config() {
 
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
-        while [[ -n "${FTP_USER_DIR_MOD}" ]]; do
+        while [ "${FTP_USER_DIR_MOD}" != "/" ]; do
             if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "755" ]; then chmod 0755 "${FTP_USER_DIR_MOD}"; fi 
             if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
             if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
-            FTP_USER_DIR_MOD=${FTP_USER_DIR_MOD%[^/]*}
+            FTP_USER_DIR_MOD="$(dirname "${FTP_USER_DIR_MOD}")"
+            echo "${FTP_USER_DIR_MOD,,} - ${ROOT_MOD,,}"
         done
 
         if [ "${FTP_USER_MOD^^}" == "RW" ]; then
