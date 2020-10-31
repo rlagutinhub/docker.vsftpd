@@ -81,7 +81,7 @@ This image uses environment variables to allow the configuration of some paramet
 * Accepted values: username:password:local_root:access_mode:cmd
   * `username` Any string. Avoid whitespaces and special chars.
   * `password` Any string.
-  * `local_root` Any sub folder **only** in the dir `/var/ftp`.
+  * `local_root` Any sub folder **only** in the dir `/var/ftp/pub`.
   * `access_mode` Access mode. <RW|RO>
   * `cmd` Set to YES if you want to allow change the current directory to DIR. <NO|YES>
 * Description: Adds multiple users.
@@ -124,7 +124,7 @@ docker run -dit \
  --stop-timeout 60 \
  --memory="2048m" --cpus=1 \
  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32599:32500-32599/tcp \
- -v vsftpd_data:/var/ftp \
+ -v vsftpd_data:/var/ftp/pub \
  -v vsftpd_logs:/logs \
  --name vsftpd \
  vsftpd:latest
