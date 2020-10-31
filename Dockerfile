@@ -53,7 +53,6 @@ ENV LANG=ru_RU.UTF-8 \
     TZ=Europe/Moscow
 
 RUN set -ex \
-    && usermod -d /var/ftp ftp \
     && usermod -u ${FTP_UID} ftp \
     && groupmod -g ${FTP_GID} ftp \
     ;
