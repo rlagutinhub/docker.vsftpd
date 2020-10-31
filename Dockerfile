@@ -16,13 +16,15 @@
 #  -e "FTP_PASV_MAX_PORT=32599" \
 #  -e "FTP_ADM_NAME=admin" \
 #  -e "FTP_ADM_PASS=passw0rd" \
+#  -e "FTP_ANON=NO" \
+#  -e "FTP_ANON_MODE=NO" \
 #  -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes" \
 #  -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:yes" \
 #  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no" \
 #  --stop-timeout 60 \
 #  --memory="2048m" --cpus=1 \
 #  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32599:32500-32599/tcp \
-#  -v vsftpd_data:/var/ftp/pub \
+#  -v vsftpd_data:/var/ftp \
 #  -v vsftpd_logs:/logs \
 #  --name vsftpd \
 #  vsftpd:latest
