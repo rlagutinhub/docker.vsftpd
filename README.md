@@ -66,7 +66,7 @@ This image uses environment variables to allow the configuration of some paramet
 * Variable name: `FTP_ADM_NAME`
 * Default value: admin
 * Accepted values: Any string. Avoid whitespaces and special chars.
-* Description: Username for the admin FTP account. If you don't specify it through the `FTP_ADM_NAME` environment variable at run time, `admin` will be used by default.
+* Description: Username for the admin FTP account (not for workload). If you don't specify it through the `FTP_ADM_NAME` environment variable at run time, `admin` will be used by default.
 
 ----
 
@@ -96,13 +96,13 @@ This image uses environment variables to allow the configuration of some paramet
 
 * Variable name: `FTP_USER_1,,,N`
 * Default value: not defined
-* Accepted values: username:password:local_root:access_mode:cmd
+* Accepted values: <username:password:local_root:access_mode:cmd>
   * `username` Any string. Avoid whitespaces and special chars.
   * `password` Any string.
   * `local_root` Any sub folder **only** in the dir `/var/ftp/pub`.
   * `access_mode` Access mode. <RW|RO>
   * `cmd` Set to YES if you want to allow change the current directory to DIR. <NO|YES>
-* Description: Adds multiple users.
+* Description: Adds multiple users for the workloads.
 
 
 Use cases
