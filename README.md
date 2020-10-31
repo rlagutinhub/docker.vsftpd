@@ -116,6 +116,8 @@ docker run -dit \
  -e "FTP_PASV_MAX_PORT=32599" \
  -e "FTP_ADM_NAME=admin" \
  -e "FTP_ADM_PASS=passw0rd" \
+ -e "FTP_ANON=NO" \
+ -e "FTP_ANON_MODE=NO" \
  -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes" \
  -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:yes" \
  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no" \

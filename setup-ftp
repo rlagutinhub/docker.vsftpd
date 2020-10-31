@@ -16,6 +16,8 @@ FTP_PASV_MAX_PORT=${FTP_PASV_MAX_PORT:-"32599"}
 FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
 
+FTP_ANON=${FTP_ANON:-"NO"}
+
 DATE=$(date +%Y.%m.%d_%H.%M.%S_%N)
 
 VSFTPD=/usr/sbin/vsftpd
@@ -136,6 +138,34 @@ if [ "${FTP_PASV_MAX_PORT}" -le "${FTP_PASV_MIN_PORT}" ]; then exit 1; fi
 _config "${FTP_ADM_NAME}" "${ROOT}" "RW" "YES"
 echo "${FTP_ADM_NAME}" >> "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
+
+if [ "${FTP_ANON^^}" == "YES" ]; then
+    _update "anonymous_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_upload_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_mkdir_write_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_other_write_enable" "YES" "${VSFTPD_CONF}"
+    echo "anonymous" >> "${USERLIST_FILE}"
+else
+    _update "anonymous_enable" "NO" "${VSFTPD_CONF}"
+    _update "anon_upload_enable" "NO" "${VSFTPD_CONF}"
+    _update "anon_mkdir_write_enable" "NO" "${VSFTPD_CONF}"
+    _update "anon_other_write_enable" "NO" "${VSFTPD_CONF}"
+fi
+
+if [ "${FTP_ANON_MODE^^}" == "ALL" ]; then
+    _update "anon_upload_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_mkdir_write_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_other_write_enable" "YES" "${VSFTPD_CONF}"
+    echo "anonymous" >> "${USERLIST_FILE}"
+elif [ "${FTP_ANON_MODE^^}" == "RW" ]; then
+    _update "anon_upload_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_mkdir_write_enable" "YES" "${VSFTPD_CONF}"
+    _update "anon_other_write_enable" "NO" "${VSFTPD_CONF}"
+else
+    _update "anon_upload_enable" "NO" "${VSFTPD_CONF}"
+    _update "anon_mkdir_write_enable" "NO" "${VSFTPD_CONF}"
+    _update "anon_other_write_enable" "NO" "${VSFTPD_CONF}"
+fi
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_MOD FTP_USER_CWD <<< "${!user}"
