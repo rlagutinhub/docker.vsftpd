@@ -52,7 +52,7 @@ ARG FTP_GID=1000
 ENV LANG=ru_RU.UTF-8 \
     TZ=Europe/Moscow
 
-RUN set -x \
+RUN set -ex \
     && usermod -u ${FTP_UID} ftp \
     && groupmod -g ${FTP_GID} ftp \
     ;
