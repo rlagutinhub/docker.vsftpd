@@ -46,16 +46,16 @@ FROM oraclelinux:8-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 
-# ARG FTP_UID=1000
-# ARG FTP_GID=1000
+ARG FTP_UID=1000
+ARG FTP_GID=1000
 
 ENV LANG=ru_RU.UTF-8 \
     TZ=Europe/Moscow
 
-# RUN set -x \
-#     && groupadd -g ${FTP_GID} ftpsecure \
-#     && useradd --no-create-home --home-dir /var/ftp -s /sbin/nologin --uid ${FTP_UID} --gid ${FTP_GID} -c 'ftp secure' ftpsecure \
-#     ;
+RUN set -x \
+    && usermod -u ${FTP_UID} ftp \
+    && groupmod -g ${FTP_GID} ftp \
+    ;
 
 RUN set -ex \
     && microdnf install rootfiles tar gzip glibc-langpack-ru \
