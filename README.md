@@ -4,9 +4,10 @@
 This vsftpd docker image is based on official oraclelinux:8-slim image and comes with following features:  
 
  * Virtual users
+ * SSL support
  * Active and Passive mode
  * Logging to a file and STDOUT
- * Not anonymous access
+ * Anonymous account access
 
 Environment variables
 ----
@@ -88,7 +89,7 @@ This image uses environment variables to allow the configuration of some paramet
 * Accepted values: <NO|RW|ALL>
   * `NO` reade only
   * `RW` reade write and disallow delete
-  * `RW` reade write and allow delete
+  * `ALL` reade write and allow delete
 * Description: Grants access to user anonymous need to have access to files in `/var/ftp/pub` directory.
 
 ----
