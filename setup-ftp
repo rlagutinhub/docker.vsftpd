@@ -89,7 +89,8 @@ function _config() {
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
         if [ "${FTP_USER_DIR_MOD,,}" == "${ROOT_MOD,,}" ]; then
-            if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "555" ]; then chmod 0555 "${FTP_USER_DIR_MOD}"; fi
+            if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD}"; fi
+            # if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "555" ]; then chmod 0555 "${FTP_USER_DIR_MOD}"; fi
             if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
             if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
         else
