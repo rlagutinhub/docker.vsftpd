@@ -76,6 +76,23 @@ This image uses environment variables to allow the configuration of some paramet
 
 ----
 
+* Variable name: `FTP_ANON`
+* Default value: NO
+* Accepted values: <NO|YES>
+* Description: Allow anonymous access to files in `/var/ftp/pub` directory.
+
+----
+
+* Variable name: `FTP_ANON_MODE`
+* Default value: NO
+* Accepted values: <NO|RW|ALL>
+  * `NO` reade only
+  * `RW` reade write and disallow delete
+  * `RW` reade write and allow delete
+* Description: Grants access to user anonymous need to have access to files in `/var/ftp/pub` directory.
+
+----
+
 * Variable name: `FTP_USER_1,,,N`
 * Default value: not defined
 * Accepted values: username:password:local_root:access_mode:cmd
