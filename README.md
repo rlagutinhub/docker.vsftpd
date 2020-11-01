@@ -237,7 +237,7 @@ services:
         constraints:
           # - node.role == manager
           - node.role == worker
-          # - node.labels.vsftpd == true
+          - node.labels.vsftpd == true
 networks:
   proxy:
     external: true
