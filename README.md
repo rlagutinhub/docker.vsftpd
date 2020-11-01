@@ -70,6 +70,27 @@ This image uses environment variables to allow the configuration of some paramet
 
 ----
 
+* Variable name: `FTP_PASV_PROMISCUOUS`
+* Default value: NO
+* Accepted values: <NO|YES>
+* Description: Set to YES if you want to disable the PASV security check that ensures the data connection originates from the same IP address as the control connection. Only enable if you know what you are doing! The only legitimate use for this is in some form of secure tunnelling scheme, or perhaps to facilitate FXP support.
+
+----
+
+* Variable name: `FTP_PORT_PROMISCUOUS`
+* Default value: NO
+* Accepted values: <NO|YES>
+* Description: Set to YES if you want to disable the PORT security check that ensures that outgoing data connections can only connect to the client. Only enable if you know what you are doing! Legitimate use for this is to facilitate FXP support.
+
+----
+
+* Variable name: `FTP_REVERSE_LOOKUP_ENABLE`
+* Default value: YES
+* Accepted values: <NO|YES>
+* Description: Set to NO if you want to avoid performance issues where a name server doesn't respond to a reverse lookup.
+
+----
+
 * Variable name: `FTP_ADM_NAME`
 * Default value: admin
 * Accepted values: Any string. Avoid whitespaces and special chars.
@@ -140,6 +161,9 @@ docker run -dit \
  -e "FTP_PASV_ADDR_RESOLVE=NO" \
  -e "FTP_PASV_MIN_PORT=30025" \
  -e "FTP_PASV_MAX_PORT=30050" \
+ -e "FTP_PASV_PROMISCUOUS=NO" \
+ -e "FTP_PORT_PROMISCUOUS=NO" \
+ -e "FTP_REVERSE_LOOKUP_ENABLE=YES" \
  -e "FTP_ADM_NAME=admin" \
  -e "FTP_ADM_PASS=passw0rd" \
  -e "FTP_ANON=NO" \
@@ -180,6 +204,9 @@ services:
       - "FTP_PASV_ADDR_RESOLVE=YES"
       - "FTP_PASV_MIN_PORT=30025"
       - "FTP_PASV_MAX_PORT=30050"
+      - "FTP_PASV_PROMISCUOUS=YES"
+      - "FTP_PORT_PROMISCUOUS=YES"
+      - "FTP_REVERSE_LOOKUP_ENABLE=NO"
       - "FTP_ADM_NAME=admin"
       - "FTP_ADM_PASS=passw0rd"
       - "FTP_ANON=NO"
