@@ -50,14 +50,14 @@ This image uses environment variables to allow the configuration of some paramet
 ----
 
 * Variable name: `FTP_PASV_MIN_PORT`
-* Default value: 32500
+* Default value: 30025
 * Accepted values: Any valid port number.
 * Description: This will be used as the lower bound of the passive mode port range. Remember to publish your ports with `docker -p` parameter.
 
 ----
 
 * Variable name: `FTP_PASV_MAX_PORT`
-* Default value: 32599
+* Default value: 30050
 * Accepted values: Any valid port number.
 * Description: This will be used as the upper bound of the passive mode port range. It will take longer to start a container with a high number of published ports.
 
@@ -130,8 +130,8 @@ docker run -dit \
  -e "FTP_LISTEN_PORT=21" \
  -e "FTP_DATA_PORT=20" \
  -e "FTP_PASV_ADDRESS=NO" \
- -e "FTP_PASV_MIN_PORT=32500" \
- -e "FTP_PASV_MAX_PORT=32599" \
+ -e "FTP_PASV_MIN_PORT=30025" \
+ -e "FTP_PASV_MAX_PORT=30050" \
  -e "FTP_ADM_NAME=admin" \
  -e "FTP_ADM_PASS=passw0rd" \
  -e "FTP_ANON=NO" \
@@ -141,7 +141,7 @@ docker run -dit \
  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no" \
  --stop-timeout 60 \
  --memory="2048m" --cpus=1 \
- --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32599:32500-32599/tcp \
+ --network=bridge -p 20:20/tcp -p 21:21/tcp -p 30025-30050:30025-30050/tcp \
  -v vsftpd_data:/var/ftp/pub \
  -v vsftpd_logs:/logs \
  --name vsftpd \
