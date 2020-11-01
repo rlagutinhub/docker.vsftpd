@@ -12,8 +12,12 @@
 #  -e "FTP_LISTEN_PORT=21" \
 #  -e "FTP_DATA_PORT=20" \
 #  -e "FTP_PASV_ADDRESS=NO" \
-#  -e "FTP_PASV_MIN_PORT=32500" \
-#  -e "FTP_PASV_MAX_PORT=32599" \
+#  -e "FTP_PASV_ADDR_RESOLVE=NO" \
+#  -e "FTP_PASV_MIN_PORT=30025" \
+#  -e "FTP_PASV_MAX_PORT=30050" \
+#  -e "FTP_PASV_PROMISCUOUS=NO" \
+#  -e "FTP_PORT_PROMISCUOUS=NO" \
+#  -e "FTP_REVERSE_LOOKUP_ENABLE=YES" \
 #  -e "FTP_ADM_NAME=admin" \
 #  -e "FTP_ADM_PASS=passw0rd" \
 #  -e "FTP_ANON=NO" \
@@ -23,7 +27,7 @@
 #  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no" \
 #  --stop-timeout 60 \
 #  --memory="2048m" --cpus=1 \
-#  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 32500-32599:32500-32599/tcp \
+#  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 30025-30050:30025-30050/tcp \
 #  -v vsftpd_data:/var/ftp/pub \
 #  -v vsftpd_logs:/logs \
 #  --name vsftpd \
