@@ -1,5 +1,4 @@
 #!/bin/bash
-# http://vsftpd.beasts.org/
 
 set -e
 
@@ -14,6 +13,11 @@ FTP_PASV_ADDR_RESOLVE=${FTP_PASV_ADDR_RESOLVE:-"NO"}
 
 FTP_PASV_MIN_PORT=${FTP_PASV_MIN_PORT:-"30025"}
 FTP_PASV_MAX_PORT=${FTP_PASV_MAX_PORT:-"30050"}
+
+FTP_PASV_PROMISCUOUS=${FTP_PASV_PROMISCUOUS:-"NO"}
+FTP_PORT_PROMISCUOUS=${FTP_PORT_PROMISCUOUS:-"NO"}
+
+FTP_REVERSE_LOOKUP_ENABLE=${FTP_REVERSE_LOOKUP_ENABLE:-"YES"}
 
 FTP_ADM_NAME=${FTP_ADM_NAME:-"admin"}
 FTP_ADM_PASS=${FTP_ADM_PASS:-"passw0rd"}
@@ -143,7 +147,30 @@ if [[ "${FTP_LISTEN_PORT}" =~ ^[0-9]+$ ]]; then _update "listen_port" "${FTP_LIS
 if [[ "${FTP_DATA_PORT}" =~ ^[0-9]+$ ]]; then _update "ftp_data_port" "${FTP_DATA_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
 
 if [ "${FTP_PASV_ADDRESS^^}" != "NO" ]; then _update "pasv_address" "${FTP_PASV_ADDRESS}" "${VSFTPD_CONF}"; fi
-if [ "${FTP_PASV_ADDR_RESOLVE^^}" != "NO" ]; then _update "pasv_addr_resolve" "${FTP_PASV_ADDR_RESOLVE}" "${VSFTPD_CONF}"; fi
+
+if [ "${FTP_PASV_ADDR_RESOLVE^^}" == "YES" ]; then
+    _update "pasv_addr_resolve" "YES" "${VSFTPD_CONF}"
+else
+    _update "pasv_addr_resolve" "NO" "${VSFTPD_CONF}"
+fi
+
+if [ "${FTP_PASV_PROMISCUOUS^^}" == "YES" ]; then
+    _update "pasv_promiscuous" "YES" "${VSFTPD_CONF}"
+else
+    _update "pasv_promiscuous" "NO" "${VSFTPD_CONF}"
+fi
+
+if [ "${FTP_PORT_PROMISCUOUS^^}" == "YES" ]; then
+    _update "port_promiscuous" "YES" "${VSFTPD_CONF}"
+else
+    _update "port_promiscuous" "NO" "${VSFTPD_CONF}"
+fi
+
+if [ "${FTP_REVERSE_LOOKUP_ENABLE^^}" == "YES" ]; then
+    _update "reverse_lookup_enable" "YES" "${VSFTPD_CONF}"
+else
+    _update "reverse_lookup_enable" "NO" "${VSFTPD_CONF}"
+fi
 
 if [[ "${FTP_PASV_MIN_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_min_port" "${FTP_PASV_MIN_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
 if [[ "${FTP_PASV_MAX_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_max_port" "${FTP_PASV_MAX_PORT}" "${VSFTPD_CONF}"; else exit 1; fi
