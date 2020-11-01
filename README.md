@@ -137,6 +137,7 @@ docker run -dit \
  -e "FTP_LISTEN_PORT=21" \
  -e "FTP_DATA_PORT=20" \
  -e "FTP_PASV_ADDRESS=NO" \
+ -e "PASV_ADDR_RESOLVE=NO" \
  -e "FTP_PASV_MIN_PORT=30025" \
  -e "FTP_PASV_MAX_PORT=30050" \
  -e "FTP_ADM_NAME=admin" \
@@ -175,7 +176,8 @@ services:
       - "FTP_LOG_FILE=NO"
       - "FTP_LISTEN_PORT=21"
       - "FTP_DATA_PORT=20"
-      - "FTP_PASV_ADDRESS=192.168.1.1"
+      - "FTP_PASV_ADDRESS=ftp.example.com"
+      - "PASV_ADDR_RESOLVE=YES"
       - "FTP_PASV_MIN_PORT=30025"
       - "FTP_PASV_MAX_PORT=30050"
       - "FTP_ADM_NAME=admin"
