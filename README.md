@@ -147,6 +147,67 @@ docker run -dit \
  --name vsftpd \
  vsftpd:latest
 ```
+```
+version: '3.7'
+services:
+  srv:
+    image: vsftpd:latest
+    volumes:
+      - /data/logs:/logs:rw
+      # - /data/tmp:/data/tmp:rw
+    ports:
+      - "20:20/tcp"
+      - "21:21/tcp"
+      # - "30020:30020/tcp"
+      # - "30021:30021/tcp"
+      - "30025-30050:30025-30050/tcp"
+    networks:
+      - proxy
+    environment:
+      - "FTP_FORCE_SSL=YES"
+      - "FTP_LOG_FILE=NO"
+      - "FTP_LISTEN_PORT=21"
+      - "FTP_DATA_PORT=20"
+      - "FTP_PASV_ADDRESS=192.168.1.1"
+      - "FTP_PASV_MIN_PORT=30025"
+      - "FTP_PASV_MAX_PORT=30050"
+      - "FTP_ADM_NAME=admin"
+      - "FTP_ADM_PASS=passw0rd"
+      - "FTP_ANON=NO"
+      - "FTP_ANON_MODE=NO"
+      - "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes"
+      - "FTP_USER_2=user2:pass2:/var/ftp/pub/data2:ro:yes"
+      - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no"
+    stop_grace_period: 1m
+    deploy:
+      # mode: global
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        # order: stop-first
+      resources:
+        limits:
+          memory: 2G
+      restart_policy:
+        # condition: any
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints:
+          # - node.role == manager
+          - node.role == worker
+          # - node.labels.vsftpd == true
+networks:
+  proxy:
+    external: true
+# volumes:
+  # logs:
+    # external: true
+```
 
 4) Other:
 
