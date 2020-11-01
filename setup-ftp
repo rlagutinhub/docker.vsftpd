@@ -1,5 +1,5 @@
 #!/bin/bash
-# https://security.appspot.com/vsftpd.html
+# http://vsftpd.beasts.org/
 
 set -e
 
