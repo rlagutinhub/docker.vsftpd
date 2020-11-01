@@ -44,8 +44,15 @@ This image uses environment variables to allow the configuration of some paramet
 
 * Variable name: `FTP_PASV_ADDRESS`
 * Default value: NO
-* Accepted values: Any IPv4 address
+* Accepted values: Any IPv4 address or Hostname (see PASV_ADDRESS_RESOLVE).
 * Description: IP address that vsftpd will advertise in response to the PASV command. This is useul when running behind a proxy, or with docker swarm.
+
+----
+
+* Variable name: `PASV_ADDR_RESOLVE`
+* Default value: NO
+* Accepted values: <NO|YES>
+* Description: Set to YES if you want to use a hostname (as opposed to IP address) in the PASV_ADDRESS option.
 
 ----
 
