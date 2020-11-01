@@ -1,5 +1,4 @@
 
-
 FROM oraclelinux:8-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
