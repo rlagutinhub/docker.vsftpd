@@ -96,12 +96,12 @@ This image uses environment variables to allow the configuration of some paramet
 
 * Variable name: `FTP_USER_1,,,N`
 * Default value: not defined
-* Accepted values: <username:password:local_root:access_mode:cmd>
-  * `username` Any string. Avoid whitespaces and special chars.
-  * `password` Any string.
-  * `local_root` Any sub folder **only** in the dir `/var/ftp/pub`.
-  * `access_mode` Access mode. <RW|RO>
-  * `cmd` Set to YES if you want to allow change the current directory to DIR. <NO|YES>
+* Accepted values: `USERNAME:PASSWORD:LOCAL_ROOT:ACCESS_MODE:CMD`
+  * `USERNAME` Any string. Avoid whitespaces and special chars.
+  * `PASSWORD` Any string.
+  * `LOCAL_ROOT` Any sub folder **only** in the dir `/var/ftp/pub`.
+  * `ACCESS_MODE` Access mode. <RW|RO>
+  * `CMD` Set to YES if you want to allow change the current directory to DIR. <NO|YES>
 * Description: Adds multiple users for the workloads.
 
 
