@@ -185,8 +185,9 @@ services:
   srv:
     image: vsftpd:latest
     volumes:
-      - /data/logs:/logs:rw
+      # - /data/logs:/logs:rw
       # - /data/tmp:/data/tmp:rw
+      - vsftpd_data:/var/ftp/pub:rw
     ports:
       - "20:20/tcp"
       - "21:21/tcp"
@@ -240,9 +241,9 @@ services:
 networks:
   proxy:
     external: true
-# volumes:
-  # logs:
-    # external: true
+volumes:
+  vsftpd_data:
+    external: true
 ```
 
 4) Other:
