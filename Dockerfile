@@ -2,8 +2,8 @@ FROM oraclelinux:8-slim
 
 MAINTAINER Lagutin R.A. <rlagutin@mta4.ru>
 
-ARG FTP_UID=1024
-ARG FTP_GID=1024
+ARG FTP_UID=14
+ARG FTP_GID=50
 
 ENV LANG=ru_RU.UTF-8 \
     TZ=Europe/Moscow
