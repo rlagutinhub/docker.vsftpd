@@ -104,7 +104,7 @@ function _config() {
                 if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD}"; fi
                 if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
                 if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
-                FTP_USER_DIR_MOD="$(dirname "${FTP_USER_DIR_MOD}")"
+                local FTP_USER_DIR_MOD="$(dirname "${FTP_USER_DIR_MOD}")"
                 if [ "${FTP_USER_DIR_MOD,,}/" == "${ROOT_MOD,,}" ]; then break; fi
             done
         fi
