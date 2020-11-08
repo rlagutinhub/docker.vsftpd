@@ -15,7 +15,8 @@ RUN set -ex \
 
 RUN set -ex \
     && microdnf install rootfiles tar gzip glibc-langpack-ru \
-    && microdnf install openssl nc ftp vsftpd \
+    && microdnf install util-linux openssl nc \
+    && microdnf install ftp vsftpd \
     && microdnf clean all \
     ;
 
