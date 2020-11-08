@@ -75,12 +75,14 @@ function _update() {
 # $2 = $FTP_USER_DIR
 # $3 = $FTP_USER_MOD
 # $4 = $FTP_USER_CWD
+# $5 = $FTP_USER_ANON
 function _config() {
 
     local FTP_USER_NAME=$1
     local FTP_USER_DIR=$2
     local FTP_USER_MOD=$3
     local FTP_USER_CWD=$4
+    local FTP_USER_ANON=$5
 
     local ROOT_MOD=$(echo "${ROOT,,}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
     local ANON_ROOT_MOD=$(echo "${ANON_ROOT,,}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
@@ -109,12 +111,13 @@ function _config() {
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
         if [ "${FTP_USER_DIR_MOD}" != "${ROOT_MOD}" ]; then
-            while [ "${FTP_USER_DIR_MOD}" != "/" ]; do
-                if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD}"; fi
-                if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
-                if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
-                local FTP_USER_DIR_MOD_CHECK="$(dirname "${FTP_USER_DIR_MOD}")"
-                if [ "${FTP_USER_DIR_MOD_CHECK}/" == "${ROOT_MOD}" ]; then break; fi
+            local FTP_USER_DIR_MOD_PATTERN=${FTP_USER_DIR_MOD}
+            while [ "${FTP_USER_DIR_MOD_PATTERN}" != "/" ]; do
+                if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD_PATTERN}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD_PATTERN}"; fi
+                if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD_PATTERN}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_PATTERN}"; fi
+                if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD_PATTERN}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_PATTERN}"; fi
+                local FTP_USER_DIR_MOD_PATTERN="$(dirname "${FTP_USER_DIR_MOD_PATTERN}")"
+                if [ "${FTP_USER_DIR_MOD_PATTERN}/" == "${ROOT_MOD}" ]; then break; fi
             done
         fi
 
@@ -142,11 +145,17 @@ function _config() {
                 if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD_ANON}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_ANON}"; fi
 
                 if [ ! -d "${FTP_USER_ANON_DIR}" ]; then mkdir -p "${FTP_USER_ANON_DIR}"; fi
-                if [ "$(stat -c "%a" "${FTP_USER_ANON_DIR}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD_ANON}"; fi
-                if [ "$(stat -c "%U" "${FTP_USER_ANON_DIR}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_ANON_DIR}"; fi
-                if [ "$(stat -c "%G" "${FTP_USER_ANON_DIR}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_ANON_DIR}"; fi
-
-                mount --bind "${FTP_USER_DIR_MOD_ANON}" "${FTP_USER_ANON_DIR}" # required docker run with --privileged=true
+                if [ "${FTP_USER_ANON_DIR}" != "${ANON_ROOT_MOD}" ]; then
+                    local FTP_USER_ANON_DIR_PATTERN=${FTP_USER_ANON_DIR}
+                    while [ "${FTP_USER_ANON_DIR_PATTERN}" != "/" ]; do
+                        if [ "$(stat -c "%a" "${FTP_USER_ANON_DIR_PATTERN}")" -ne "775" ]; then chmod 0775 "${FTP_USER_ANON_DIR_PATTERN}"; fi
+                        if [ "$(stat -c "%U" "${FTP_USER_ANON_DIR_PATTERN}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_ANON_DIR_PATTERN}"; fi
+                        if [ "$(stat -c "%G" "${FTP_USER_ANON_DIR_PATTERN}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_ANON_DIR_PATTERN}"; fi
+                        local FTP_USER_ANON_DIR_PATTERN="$(dirname "${FTP_USER_ANON_DIR_PATTERN}")"
+                        if [ "${FTP_USER_ANON_DIR_PATTERN}/" == "${ANON_ROOT_MOD}" ]; then break; fi
+                    done
+                    mount --bind "${FTP_USER_DIR_MOD_ANON}" "${FTP_USER_ANON_DIR}" # required docker run with --privileged=true
+                fi
             fi
         fi
 
