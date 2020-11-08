@@ -86,6 +86,10 @@ function _config() {
     local ANON_ROOT_MOD=$(echo "${ANON_ROOT}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
     local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
 
+    echo $ROOT_MOD
+    echo $ANON_ROOT_MOD
+    echo $FTP_USER_DIR_MOD
+
     if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "775" ]; then chmod 0775 "${ROOT_MOD}"; fi
     # if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "555" ]; then chmod 0555 "${ROOT_MOD}"; fi
     if [ "$(stat -c "%U" "${ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${ROOT_MOD}"; fi
