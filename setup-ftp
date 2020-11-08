@@ -82,13 +82,15 @@ function _config() {
     local FTP_USER_MOD=$3
     local FTP_USER_CWD=$4
 
-    local ROOT_MOD=$(echo "${ROOT}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
-    local ANON_ROOT_MOD=$(echo "${ANON_ROOT}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
-    local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local ROOT_MOD=$(echo "${ROOT,,}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local ANON_ROOT_MOD=$(echo "${ANON_ROOT,,}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR,,}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local FTP_USER_DIR_MOD_ANON=$(echo "${FTP_USER_DIR_MOD/$ROOT_MOD/$ANON_ROOT_MOD}")
 
     echo $ROOT_MOD
     echo $ANON_ROOT_MOD
     echo $FTP_USER_DIR_MOD
+    echo "> $FTP_USER_DIR_MOD_ANON"
 
     if [ ! -d "${ROOT_MOD}" ]; then mkdir -p "${ROOT_MOD}"; fi
     if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "775" ]; then chmod 0775 "${ROOT_MOD}"; fi
@@ -104,7 +106,7 @@ function _config() {
 
     if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
 
-    echo "${FTP_USER_DIR_MOD,,}" | grep -q "^${ROOT_MOD,,}"
+    echo "${FTP_USER_DIR_MOD}" | grep -q "^${ROOT_MOD}"
 
     if [ $? -eq 0 ]; then
 
@@ -112,13 +114,13 @@ function _config() {
 
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
-        if [ "${FTP_USER_DIR_MOD,,}" != "${ROOT_MOD,,}" ]; then
+        if [ "${FTP_USER_DIR_MOD}" != "${ROOT_MOD}" ]; then
             while [ "${FTP_USER_DIR_MOD}" != "/" ]; do
                 if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD}"; fi
                 if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
                 if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
                 local FTP_USER_DIR_MOD="$(dirname "${FTP_USER_DIR_MOD}")"
-                if [ "${FTP_USER_DIR_MOD,,}/" == "${ROOT_MOD,,}" ]; then break; fi
+                if [ "${FTP_USER_DIR_MOD}/" == "${ROOT_MOD}" ]; then break; fi
             done
         fi
 
