@@ -107,7 +107,6 @@ function _config() {
     if [ $? -eq 0 ]; then
 
         echo "local_root=${FTP_USER_DIR_MOD}" > "${USER_CONFIG_DIR}/${FTP_USER_NAME}"
-
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
         if [ "${FTP_USER_DIR_MOD}" != "${ROOT_MOD}" ]; then
