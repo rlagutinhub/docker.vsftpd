@@ -249,6 +249,8 @@ while read -r user; do
         _config "${FTP_USER_NAME}" "${FTP_USER_DIR}" "${FTP_USER_MOD}" "${FTP_USER_CWD}" "${FTP_USER_ANON}"
         echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
         echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_RAW}"
+    else
+        exit 1
     fi
 done < <(env | grep "FTP_USER_" | sed 's/^\(FTP_USER_[a-zA-Z0-9]*\)=.*/\1/')
 
