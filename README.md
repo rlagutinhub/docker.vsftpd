@@ -108,7 +108,7 @@ This image uses environment variables to allow the configuration of some paramet
 * Variable name: `FTP_ANON`
 * Default value: NO
 * Accepted values: <NO|YES>
-* Description: Allow anonymous access to files in `/var/ftp/pub` directory.
+* Description: Allow anonymous access to files in `/var/ftp/anonymous` directory.
 
 ----
 
@@ -118,18 +118,19 @@ This image uses environment variables to allow the configuration of some paramet
   * `NO` reade only
   * `RW` reade write and disallow delete
   * `ALL` reade write and allow delete
-* Description: Grants access to user anonymous need to have access to files in `/var/ftp/pub` directory.
+* Description: Grants access to user anonymous need to have access to files in `/var/ftp/anonymous` directory.
 
 ----
 
 * Variable name: `FTP_USER_1,,,N`
 * Default value: not defined
-* Accepted values: `USERNAME:PASSWORD:LOCAL_ROOT:ACCESS_MODE:CMD`
+* Accepted values: `USERNAME:PASSWORD:LOCAL_ROOT:ACCESS_MODE:CMD:ANON`
   * `USERNAME` Any string. Avoid whitespaces and special chars.
   * `PASSWORD` Any string.
   * `LOCAL_ROOT` Any sub folder **only** in the dir `/var/ftp/pub`.
   * `ACCESS_MODE` Access mode. <RW|RO>
   * `CMD` Set to YES if you want to allow change the current directory to DIR. <NO|YES>
+  * `ANON` Set to YES if you want to allow anonymous access the current directory to DIR. <NO|YES>
 * Description: Adds multiple users for the workloads.
 
 
@@ -168,9 +169,10 @@ docker run -dit \
  -e "FTP_ADM_PASS=passw0rd" \
  -e "FTP_ANON=NO" \
  -e "FTP_ANON_MODE=NO" \
- -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes" \
- -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:yes" \
- -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no" \
+ -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes:yes" \
+ -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:yes:no" \
+ -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no:yes" \
+ --privileged=true \
  --stop-timeout 60 \
  --memory="2048m" --cpus=1 \
  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 30025-30050:30025-30050/tcp \
@@ -184,6 +186,7 @@ version: '3.7'
 services:
   srv:
     image: vsftpd:latest
+    privileged: true
     volumes:
       # - /data/logs:/logs:rw
       # - /data/tmp:/data/tmp:rw
