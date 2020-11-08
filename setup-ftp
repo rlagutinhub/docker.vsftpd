@@ -134,28 +134,18 @@ function _config() {
         fi
 
         if [ "${FTP_USER_ANON^^}" == "YES" ]; then
-
-            if [ "${FTP_USER_DIR_MOD}" != "${ROOT_MOD}" ]; then
-                local FTP_USER_DIR_MOD_ANON=$(echo "${FTP_USER_DIR_MOD,,}/anonymous/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
-                local FTP_USER_ANON_DIR=$(echo "${FTP_USER_DIR_MOD/$ROOT_MOD/$ANON_ROOT_MOD}")
-
-                if [ ! -d "${FTP_USER_DIR_MOD_ANON}" ]; then mkdir -p "${FTP_USER_DIR_MOD_ANON}"; fi
-                if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD_ANON}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD_ANON}"; fi
-                if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD_ANON}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_ANON}"; fi
-                if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD_ANON}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_ANON}"; fi
-
-                if [ ! -d "${FTP_USER_ANON_DIR}" ]; then mkdir -p "${FTP_USER_ANON_DIR}"; fi
-                if [ "${FTP_USER_ANON_DIR}" != "${ANON_ROOT_MOD}" ]; then
-                    local FTP_USER_ANON_DIR_PATTERN=${FTP_USER_ANON_DIR}
-                    while [ "${FTP_USER_ANON_DIR_PATTERN}" != "/" ]; do
-                        if [ "$(stat -c "%a" "${FTP_USER_ANON_DIR_PATTERN}")" -ne "775" ]; then chmod 0775 "${FTP_USER_ANON_DIR_PATTERN}"; fi
-                        if [ "$(stat -c "%U" "${FTP_USER_ANON_DIR_PATTERN}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_ANON_DIR_PATTERN}"; fi
-                        if [ "$(stat -c "%G" "${FTP_USER_ANON_DIR_PATTERN}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_ANON_DIR_PATTERN}"; fi
-                        local FTP_USER_ANON_DIR_PATTERN="$(dirname "${FTP_USER_ANON_DIR_PATTERN}")"
-                        if [ "${FTP_USER_ANON_DIR_PATTERN}/" == "${ANON_ROOT_MOD}" ]; then break; fi
-                    done
-                    mount --bind "${FTP_USER_DIR_MOD_ANON}" "${FTP_USER_ANON_DIR}" # required docker run with --privileged=true
-                fi
+            local FTP_USER_DIR_MOD_ANON=$(echo "${FTP_USER_DIR_MOD/$ROOT_MOD/$ANON_ROOT_MOD}")
+            if [ ! -d "${FTP_USER_DIR_MOD_ANON}" ]; then mkdir -p "${FTP_USER_DIR_MOD_ANON}"; fi
+            if [ "${FTP_USER_DIR_MOD_ANON}" != "${ANON_ROOT_MOD}" ]; then
+                local FTP_USER_DIR_MOD_ANON_PATTERN=${FTP_USER_DIR_MOD_ANON}
+                while [ "${FTP_USER_DIR_MOD_ANON_PATTERN}" != "/" ]; do
+                    if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD_ANON_PATTERN}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD_ANON_PATTERN}"; fi
+                    if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD_ANON_PATTERN}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_ANON_PATTERN}"; fi
+                    if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD_ANON_PATTERN}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD_ANON_PATTERN}"; fi
+                    local FTP_USER_DIR_MOD_ANON_PATTERN="$(dirname "${FTP_USER_DIR_MOD_ANON_PATTERN}")"
+                    if [ "${FTP_USER_DIR_MOD_ANON_PATTERN}/" == "${ANON_ROOT_MOD}" ]; then break; fi
+                done
+                mount --bind "${FTP_USER_DIR_MOD}" "${FTP_USER_DIR_MOD_ANON}" # required docker run with --privileged=true
             fi
         fi
 
