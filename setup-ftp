@@ -146,7 +146,9 @@ function _config() {
                     local FTP_USER_DIR_MOD_ANON_PATTERN="$(dirname "${FTP_USER_DIR_MOD_ANON_PATTERN}")"
                     if [ "${FTP_USER_DIR_MOD_ANON_PATTERN}/" == "${ANON_ROOT_MOD}" ]; then break; fi
                 done
-                mount --bind "${FTP_USER_DIR_MOD}" "${FTP_USER_DIR_MOD_ANON}" # required docker run with --privileged=true (--cap-add=SYS_ADMIN)
+                if [ -z "$(cat /proc/mounts | cut -d" " -f2 | grep -i "^${FTP_USER_DIR_MOD_ANON}$")" ]; then
+                    mount --bind "${FTP_USER_DIR_MOD}" "${FTP_USER_DIR_MOD_ANON}" # required docker run with --privileged=true (--cap-add=SYS_ADMIN)
+                fi
             fi
         fi
 
