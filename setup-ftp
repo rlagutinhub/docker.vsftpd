@@ -37,6 +37,7 @@ BDB_RAW=/etc/vsftpd/users_password
 BDB=/etc/vsftpd/users_password.db
 
 ROOT=$(grep -w ^local_root "${VSFTPD_CONF}" | cut -d= -f2)
+ANON_ROOT=$(grep -w ^anon_root "${VSFTPD_CONF}" | cut -d= -f2)
 NOPRIV_USER=$(grep -w ^nopriv_user "${VSFTPD_CONF}" | cut -d= -f2)
 USERLIST_FILE=$(grep -w ^userlist_file "${VSFTPD_CONF}" | cut -d= -f2)
 USER_CONFIG_DIR=$(grep -w ^user_config_dir "${VSFTPD_CONF}" | cut -d= -f2)
@@ -82,7 +83,18 @@ function _config() {
     local FTP_USER_CWD=$4
 
     local ROOT_MOD=$(echo "${ROOT}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+    local ANON_ROOT_MOD=$(echo "${ANON_ROOT}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
     local FTP_USER_DIR_MOD=$(echo "${FTP_USER_DIR}/" | tr -s / | sed 's/\/:/:/g;s/:/\n/g')
+
+    if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "775" ]; then chmod 0775 "${ROOT_MOD}"; fi
+    # if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "555" ]; then chmod 0555 "${ROOT_MOD}"; fi
+    if [ "$(stat -c "%U" "${ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${ROOT_MOD}"; fi
+    if [ "$(stat -c "%G" "${ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${ROOT_MOD}"; fi
+
+    # if [ "$(stat -c "%a" "${ANON_ROOT_MOD}")" -ne "775" ]; then chmod 0775 "${ANON_ROOT_MOD}"; fi
+    if [ "$(stat -c "%a" "${ANON_ROOT_MOD}")" -ne "555" ]; then chmod 0555 "${ANON_ROOT_MOD}"; fi
+    if [ "$(stat -c "%U" "${ANON_ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${ANON_ROOT_MOD}"; fi
+    if [ "$(stat -c "%G" "${ANON_ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${ANON_ROOT_MOD}"; fi
 
     if [ ! -d "${USER_CONFIG_DIR}" ]; then mkdir -p "${USER_CONFIG_DIR}"; fi
 
@@ -94,12 +106,7 @@ function _config() {
 
         if [ ! -d "${FTP_USER_DIR_MOD}" ]; then mkdir -p "${FTP_USER_DIR_MOD}"; fi
 
-        if [ "${FTP_USER_DIR_MOD,,}" == "${ROOT_MOD,,}" ]; then
-            if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD}"; fi
-            # if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "555" ]; then chmod 0555 "${FTP_USER_DIR_MOD}"; fi
-            if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
-            if [ "$(stat -c "%G" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
-        else
+        if [ "${FTP_USER_DIR_MOD,,}" != "${ROOT_MOD,,}" ]; then
             while [ "${FTP_USER_DIR_MOD}" != "/" ]; do
                 if [ "$(stat -c "%a" "${FTP_USER_DIR_MOD}")" -ne "775" ]; then chmod 0775 "${FTP_USER_DIR_MOD}"; fi
                 if [ "$(stat -c "%U" "${FTP_USER_DIR_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_DIR_MOD}"; fi
