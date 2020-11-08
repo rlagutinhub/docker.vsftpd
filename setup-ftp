@@ -134,8 +134,10 @@ function _config() {
         fi
 
         if [ "${FTP_USER_ANON^^}" == "YES" ]; then
+
             local FTP_USER_DIR_MOD_ANON=$(echo "${FTP_USER_DIR_MOD/$ROOT_MOD/$ANON_ROOT_MOD}")
             if [ ! -d "${FTP_USER_DIR_MOD_ANON}" ]; then mkdir -p "${FTP_USER_DIR_MOD_ANON}"; fi
+
             if [ "${FTP_USER_DIR_MOD_ANON}" != "${ANON_ROOT_MOD}" ]; then
                 local FTP_USER_DIR_MOD_ANON_PATTERN=${FTP_USER_DIR_MOD_ANON}
                 while [ "${FTP_USER_DIR_MOD_ANON_PATTERN}" != "/" ]; do
