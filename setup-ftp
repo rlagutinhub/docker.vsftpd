@@ -90,11 +90,13 @@ function _config() {
     echo $ANON_ROOT_MOD
     echo $FTP_USER_DIR_MOD
 
+    if [ ! -d "${ROOT_MOD}" ]; then mkdir -p "${ROOT_MOD}"; fi
     if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "775" ]; then chmod 0775 "${ROOT_MOD}"; fi
     # if [ "$(stat -c "%a" "${ROOT_MOD}")" -ne "555" ]; then chmod 0555 "${ROOT_MOD}"; fi
     if [ "$(stat -c "%U" "${ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${ROOT_MOD}"; fi
     if [ "$(stat -c "%G" "${ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${ROOT_MOD}"; fi
 
+    if [ ! -d "${ANON_ROOT_MOD}" ]; then mkdir -p "${ANON_ROOT_MOD}"; fi
     # if [ "$(stat -c "%a" "${ANON_ROOT_MOD}")" -ne "775" ]; then chmod 0775 "${ANON_ROOT_MOD}"; fi
     if [ "$(stat -c "%a" "${ANON_ROOT_MOD}")" -ne "555" ]; then chmod 0555 "${ANON_ROOT_MOD}"; fi
     if [ "$(stat -c "%U" "${ANON_ROOT_MOD}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${ANON_ROOT_MOD}"; fi
