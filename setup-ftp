@@ -146,7 +146,7 @@ function _config() {
                 if [ "$(stat -c "%U" "${FTP_USER_ANON_DIR}")" != "${NOPRIV_USER}" ]; then chown "${NOPRIV_USER}" "${FTP_USER_ANON_DIR}"; fi
                 if [ "$(stat -c "%G" "${FTP_USER_ANON_DIR}")" != "${NOPRIV_USER}" ]; then chgrp "${NOPRIV_USER}" "${FTP_USER_ANON_DIR}"; fi
 
-                mount --bind "${FTP_USER_DIR_MOD_ANON}" "${FTP_USER_ANON_DIR}"
+                mount --bind "${FTP_USER_DIR_MOD_ANON}" "${FTP_USER_ANON_DIR}" # required docker run with --privileged=true
             fi
         fi
 
