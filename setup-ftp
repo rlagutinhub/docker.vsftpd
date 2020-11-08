@@ -146,7 +146,7 @@ function _config() {
                     local FTP_USER_DIR_MOD_ANON_PATTERN="$(dirname "${FTP_USER_DIR_MOD_ANON_PATTERN}")"
                     if [ "${FTP_USER_DIR_MOD_ANON_PATTERN}/" == "${ANON_ROOT_MOD}" ]; then break; fi
                 done
-                mount --bind "${FTP_USER_DIR_MOD}" "${FTP_USER_DIR_MOD_ANON}" # required docker run with --privileged=true
+                mount --bind "${FTP_USER_DIR_MOD}" "${FTP_USER_DIR_MOD_ANON}" # required docker run with --cap-add=SYS_ADMIN (--privileged=true )
             fi
         fi
 
@@ -207,7 +207,7 @@ if [[ "${FTP_PASV_MAX_PORT}" =~ ^[0-9]+$ ]]; then _update "pasv_max_port" "${FTP
 
 if [ "${FTP_PASV_MAX_PORT}" -le "${FTP_PASV_MIN_PORT}" ]; then exit 1; fi
 
-_config "${FTP_ADM_NAME}" "${ROOT}" "RW" "YES"
+_config "${FTP_ADM_NAME}" "${ROOT}" "RW" "YES" "NO"
 echo "${FTP_ADM_NAME}" >> "${USERLIST_FILE}"
 echo -e "${FTP_ADM_NAME}\n${FTP_ADM_PASS}" > "${BDB_RAW}"
 
