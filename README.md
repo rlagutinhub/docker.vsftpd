@@ -130,7 +130,7 @@ This image uses environment variables to allow the configuration of some paramet
   * `LOCAL_ROOT` Any sub folder **only** in the dir `/var/ftp/pub`.
   * `ACCESS_MODE` Access mode. <RW|RO>
   * `CMD` Set to YES if you want to allow change the current directory to DIR. <NO|YES>
-  * `ANON` Set to YES if you want to allow anonymous access the current directory to DIR. <NO|YES>
+  * `ANON` Set to YES if you want to allow anonymous access to files in `LOCAL_ROOT` directory. <NO|YES>
 
     > `mount --bind` is used to configure anonymous access. Only if set to YES, required `--cap-add=SYS_ADMIN` or `--privileged=true` when run your container to use mount inside container. Instead of --privileged you can be a bit more fine-grained and use --cap-add=SYS_ADMIN.
 
