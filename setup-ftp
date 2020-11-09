@@ -238,7 +238,7 @@ fi
 
 while read -r user; do
     IFS=: read -r FTP_USER_NAME FTP_USER_PASS FTP_USER_DIR FTP_USER_MOD FTP_USER_CWD FTP_USER_ANON <<< "${!user}"
-    if [ ! -z "${FTP_USER_NAME}" ] && [ ! -z "${FTP_USER_PASS}" ] && [ ! -z "${FTP_USER_DIR}" ] && [ ! -z "${FTP_USER_MOD}" ] && [ ! -z "${FTP_USER_CWD}" ]&& [ ! -z "${FTP_USER_ANON}" ]; then
+    if [ ! -z "${FTP_USER_NAME}" ] && [ ! -z "${FTP_USER_PASS}" ] && [ ! -z "${FTP_USER_DIR}" ] && [ ! -z "${FTP_USER_MOD}" ] && [ ! -z "${FTP_USER_CWD}" ] && [ ! -z "${FTP_USER_ANON}" ]; then
         _config "${FTP_USER_NAME}" "${FTP_USER_DIR}" "${FTP_USER_MOD}" "${FTP_USER_CWD}" "${FTP_USER_ANON}"
         echo "${FTP_USER_NAME}" >> "${USERLIST_FILE}"
         echo -e "${FTP_USER_NAME}\n${FTP_USER_PASS}" >> "${BDB_RAW}"
