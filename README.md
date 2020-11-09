@@ -170,8 +170,8 @@ docker run -dit \
  -e "FTP_REVERSE_LOOKUP_ENABLE=YES" \
  -e "FTP_ADM_NAME=admin" \
  -e "FTP_ADM_PASS=passw0rd" \
- -e "FTP_ANON=NO" \
- -e "FTP_ANON_MODE=NO" \
+ -e "FTP_ANON=YES" \
+ -e "FTP_ANON_MODE=RW" \
  -e "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes:yes" \
  -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:yes:no" \
  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no:yes" \
@@ -218,9 +218,9 @@ services:
       - "FTP_ADM_PASS=passw0rd"
       - "FTP_ANON=NO"
       - "FTP_ANON_MODE=NO"
-      - "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes"
-      - "FTP_USER_2=user2:pass2:/var/ftp/pub/data2:ro:yes"
-      - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no"
+      - "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes:no"
+      - "FTP_USER_2=user2:pass2:/var/ftp/pub/data2:ro:yes:no"
+      - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no:no"
     stop_grace_period: 1m
     deploy:
       # mode: global
