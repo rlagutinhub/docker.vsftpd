@@ -167,7 +167,7 @@ docker run -dit \
  -e "FTP_PASV_MAX_PORT=30050" \
  -e "FTP_PASV_PROMISCUOUS=NO" \
  -e "FTP_PORT_PROMISCUOUS=NO" \
- -e "FTP_REVERSE_LOOKUP_ENABLE=YES" \
+ -e "FTP_REVERSE_LOOKUP_ENABLE=NO" \
  -e "FTP_ADM_NAME=admin" \
  -e "FTP_ADM_PASS=passw0rd" \
  -e "FTP_ANON=YES" \
@@ -186,8 +186,9 @@ docker run -dit \
  vsftpd:latest
 ```
 
-3.2) Docker Compose (not swarm mode):
+3.2) Docker Compose (standalone):
 
+`docker-compose -p vsftpd -f docker-compose.yml up -d`
 ```
 version: '3.7'
 services:
@@ -215,8 +216,8 @@ services:
       - "FTP_PASV_ADDR_RESOLVE=YES"
       - "FTP_PASV_MIN_PORT=30025"
       - "FTP_PASV_MAX_PORT=30050"
-      - "FTP_PASV_PROMISCUOUS=YES"
-      - "FTP_PORT_PROMISCUOUS=YES"
+      - "FTP_PASV_PROMISCUOUS=NO"
+      - "FTP_PORT_PROMISCUOUS=NO"
       - "FTP_REVERSE_LOOKUP_ENABLE=NO"
       - "FTP_ADM_NAME=admin"
       - "FTP_ADM_PASS=passw0rd"
