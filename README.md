@@ -153,7 +153,7 @@ docker volume create vsftpd_data
 docker volume create vsftpd_logs
 ```
 
-3) Docker Container:
+3.1) Docker Container:
 
 ```
 docker run -dit \
@@ -184,12 +184,15 @@ docker run -dit \
  --name vsftpd \
  vsftpd:latest
 ```
+3.2) Docker Compose (not swarm mode):
 ```
 version: '3.7'
 services:
   srv:
     image: vsftpd:latest
+    container_name: vsftpd
     privileged: true
+    restart: always
     volumes:
       # - /data/logs:/logs:rw
       # - /data/tmp:/data/tmp:rw
@@ -201,7 +204,7 @@ services:
       # - "30021:30021/tcp"
       - "30025-30050:30025-30050/tcp"
     networks:
-      - proxy
+      - bridge
     environment:
       - "FTP_FORCE_SSL=YES"
       - "FTP_LOG_FILE=NO"
@@ -223,29 +226,15 @@ services:
       - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no:no"
     stop_grace_period: 1m
     deploy:
-      # mode: global
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-        order: start-first
-        # order: stop-first
       resources:
         limits:
-          memory: 2G
-      restart_policy:
-        # condition: any
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-      placement:
-        constraints:
-          # - node.role == manager
-          - node.role == worker
-          - node.labels.vsftpd == true
+          # cpus: '0.5'
+          memory: 2048M
+        # reservations:
+          # cpus: '0.5'
+          # memory: 1024M
 networks:
-  proxy:
+  bridge:
     external: true
 volumes:
   vsftpd_data:
