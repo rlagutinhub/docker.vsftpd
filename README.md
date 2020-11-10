@@ -176,6 +176,7 @@ docker run -dit \
  -e "FTP_USER_2=user2:pass2:/var/ftp/pub/data1/data2:ro:yes:no" \
  -e "FTP_USER_3=user3:pass3:/var/ftp/pub/data1/data3:rw:no:yes" \
  --privileged=true \
+ --restart unless-stopped \
  --stop-timeout 60 \
  --memory="2048m" --cpus=1 \
  --network=bridge -p 20:20/tcp -p 21:21/tcp -p 30025-30050:30025-30050/tcp \
@@ -188,11 +189,11 @@ docker run -dit \
 ```
 version: '3.7'
 services:
-  srv:
+  vsftpd:
     image: vsftpd:latest
     container_name: vsftpd
     privileged: true
-    restart: always
+    restart: unless-stopped
     volumes:
       - vsftpd_logs:/logs:rw
       - vsftpd_data:/var/ftp/pub:rw
@@ -224,18 +225,9 @@ services:
       - "FTP_USER_2=user2:pass2:/var/ftp/pub/data2:ro:yes:no"
       - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no:no"
     stop_grace_period: 1m
-    deploy:
-      resources:
-        limits:
-          # cpus: '0.5'
-          memory: 2048M
-        # reservations:
-          # cpus: '0.5'
-          # memory: 1024M
-networks:
-  bridge:
-    external: true
 volumes:
+  vsftpd_logs:
+    external: true
   vsftpd_data:
     external: true
 ```
