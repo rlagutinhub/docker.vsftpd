@@ -194,8 +194,7 @@ services:
     privileged: true
     restart: always
     volumes:
-      # - /data/logs:/logs:rw
-      # - /data/tmp:/data/tmp:rw
+      - vsftpd_logs:/logs:rw
       - vsftpd_data:/var/ftp/pub:rw
     ports:
       - "20:20/tcp"
