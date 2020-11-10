@@ -185,7 +185,9 @@ docker run -dit \
  --name vsftpd \
  vsftpd:latest
 ```
+
 3.2) Docker Compose (not swarm mode):
+
 ```
 version: '3.7'
 services:
@@ -203,15 +205,14 @@ services:
       # - "30020:30020/tcp"
       # - "30021:30021/tcp"
       - "30025-30050:30025-30050/tcp"
-    networks:
-      - bridge
+    network_mode: bridge
     environment:
       - "FTP_FORCE_SSL=YES"
       - "FTP_LOG_FILE=NO"
       - "FTP_LISTEN_PORT=21"
       - "FTP_DATA_PORT=20"
-      - "FTP_PASV_ADDRESS=ftp.example.com"
-      - "FTP_PASV_ADDR_RESOLVE=YES"
+      - "FTP_PASV_ADDRESS=NO"
+      - "FTP_PASV_ADDR_RESOLVE=NO"
       - "FTP_PASV_MIN_PORT=30025"
       - "FTP_PASV_MAX_PORT=30050"
       - "FTP_PASV_PROMISCUOUS=YES"
@@ -219,11 +220,11 @@ services:
       - "FTP_REVERSE_LOOKUP_ENABLE=NO"
       - "FTP_ADM_NAME=admin"
       - "FTP_ADM_PASS=passw0rd"
-      - "FTP_ANON=NO"
-      - "FTP_ANON_MODE=NO"
-      - "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes:no"
-      - "FTP_USER_2=user2:pass2:/var/ftp/pub/data2:ro:yes:no"
-      - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no:no"
+      - "FTP_ANON=YES"
+      - "FTP_ANON_MODE=ALL"
+      - "FTP_USER_1=user1:pass1:/var/ftp/pub/data1:rw:yes:yes"
+      - "FTP_USER_2=user2:pass2:/var/ftp/pub/data2:ro:yes:yes"
+      - "FTP_USER_3=user3:pass3:/var/ftp/pub/data3:rw:no:yes"
     stop_grace_period: 1m
 volumes:
   vsftpd_logs:
